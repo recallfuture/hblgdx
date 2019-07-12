@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
+import 'package:gbk2utf8/gbk2utf8.dart';
 
 export 'package:dio/dio.dart';
 
@@ -18,7 +19,7 @@ class Request {
     _dio.interceptors.add(LogInterceptor(responseBody: false));
   }
 
-  // 添加默认配置
+  /// 添加默认配置
   void _addOptions() {
     // _dio.options.baseUrl = 'http://elearning.ncst.edu.cn/meol/';
     _dio.options.headers = {
@@ -35,12 +36,12 @@ class Request {
     _dio.options.validateStatus = (code) => true;
   }
 
-  // get方式获取响应
+  /// get方式获取响应
   Future<Response> get(String url, [Map query]) {
     return _dio.get(url, queryParameters: query);
   }
 
-  // 用get方式获取流式响应
+  /// 用get方式获取流式响应
   Future<Response<List<int>>> getStream(String url, [Map query]) async {
     return _dio.get<List<int>>(
       url,
@@ -49,12 +50,24 @@ class Request {
     );
   }
 
-  // 用post方式向url发送内容
+  /// 获取转码后的响应文本
+  ///
+  /// url: 请求地址
+  Future<String> getContent(String url) async {
+    // 获取字节流并转换成gbk编码的文本
+    Response<List<int>> response = await request.getStream(url);
+    if (response.statusCode == 200) {
+      return gbk.decode(response.data);
+    }
+    return null;
+  }
+
+  /// 用post方式向url发送内容
   Future<Response> post(String url, Map params) {
     return _dio.post(url, data: params);
   }
 
-  // 用post方式向url发送内容并获取流式响应
+  /// 用post方式向url发送内容并获取流式响应
   Future<Response<List<int>>> postStream(String url, Map params) {
     return _dio.post<List<int>>(
       url,
@@ -64,5 +77,5 @@ class Request {
   }
 }
 
-// 实例化方便使用
+/// 实例化方便使用
 Request request = new Request();
