@@ -4,9 +4,10 @@ import 'package:hblgdx/utils/request.dart';
 
 import 'base.dart';
 
-/// 获取由课程号和课程名组成的map
+/// 获取待交作业的课程信息
 ///
 /// 需要登录后访问
+/// 返回由课程号和课程名组成的map
 Future<Map<String, String>> getCourseMap() async {
   Map<String, String> result = new Map();
 
