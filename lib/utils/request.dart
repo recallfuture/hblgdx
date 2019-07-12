@@ -3,15 +3,14 @@ import 'dart:io';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 
+export 'package:dio/dio.dart';
+
 class Request {
-  Dio _dio;
+  Dio _dio = Dio();
   CookieJar _cookieJar = CookieJar();
 
-  static Request instance;
-
-  Future<void> init() async {
+  Request() {
     // 初始化
-    _dio = Dio();
     _addOptions();
 
     // 添加cookie和日志的拦截器
@@ -21,7 +20,7 @@ class Request {
 
   // 添加默认配置
   void _addOptions() {
-    _dio.options.baseUrl = 'http://elearning.ncst.edu.cn/meol/';
+    // _dio.options.baseUrl = 'http://elearning.ncst.edu.cn/meol/';
     _dio.options.headers = {
       'User-Agent':
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36',
@@ -66,3 +65,6 @@ class Request {
     );
   }
 }
+
+// 实例化方便使用
+Request request = new Request();
