@@ -37,7 +37,7 @@ Future<List<Homework>> getHomeworkList(String courseId) async {
   List<Homework> result = new List();
 
   // 需要先访问这个课程地址才能通过下面的固定地址得到正确的作业信息
-  await request.get(courseUrl + courseId);
+  await request.get('$courseUrl?courseId=$courseId');
   String content = await request.getContent(homeworkListUrl);
   if (content == null) {
     return null;
@@ -64,7 +64,8 @@ Future<List<Homework>> getHomeworkList(String courseId) async {
 /// 登录后访问
 Future<String> getHomeworkDetail(String homeworkId) async {
   String regex = r"<input type='hidden'.*?value='(.*?)'>";
-  String content = await request.getContent(homeworkDetailUrl + homeworkId);
+  String content = await request.getContent(
+      '$homeworkDetailUrl?hwtid=$homeworkId');
   if (content == null) {
     return null;
   }

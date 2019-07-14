@@ -8,14 +8,17 @@ export 'package:dio/dio.dart';
 
 class Request {
   Dio _dio = Dio();
-  CookieJar _cookieJar = CookieJar();
 
   Request() {
     // 初始化
     _addOptions();
+    _addInterceptors();
+  }
 
+  /// 添加拦截器
+  void _addInterceptors() {
     // 添加cookie和日志的拦截器
-    _dio.interceptors.add(CookieManager(_cookieJar));
+    _dio.interceptors.add(CookieManager(CookieJar()));
   }
 
   /// 添加默认配置
