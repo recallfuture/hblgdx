@@ -8,4 +8,8 @@ void main() {
     int code = await login(username, password);
     expect(code, 200);
   });
+
+  test('logout should success', () async {
+    await logout();
+  });
 }

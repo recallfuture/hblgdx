@@ -90,3 +90,8 @@ Future<int> login(String username, String password) async {
     return 500;
   }
 }
+
+/// 登出
+logout() async {
+  await request.get(logoutUrl);
+}

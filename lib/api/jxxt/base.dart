@@ -1,5 +1,6 @@
 const String baseUrl = 'http://elearning.ncst.edu.cn/meol/';
 const String loginUrl = baseUrl + 'loginCheck.do';
+const String logoutUrl = baseUrl + 'homepage/V8/include/logout.jsp';
 const String courseListUrl =
     baseUrl + 'welcomepage/student/interaction_reminder_v8.jsp';
 const String courseUrl = baseUrl + 'jpk/course/layout/newpage/index.jsp';

@@ -4,10 +4,14 @@ import 'package:hblgdx/model/resource.dart';
 import 'package:test_api/test_api.dart';
 
 void main() {
-  setUp(() async {
+  setUpAll(() async {
     String username = '201643710101';
     String password = 'hblgdx123';
     await login(username, password);
+  });
+
+  tearDownAll(() async {
+    await logout();
   });
 
   test('getResourceList should success', () async {
