@@ -44,22 +44,31 @@ Future<List<Homework>> getHomeworkList(String courseId) async {
   }
 
   // 获取表格的所有行并遍历
-  matchAll(r'<tr>((?:.|\n)*?)</tr>', content).forEach((row) {
-    String regex = r'<td.*?>((?:.|\n)*?)</td>';
+  List rows = matchAll(r'<tr>((?:.|\n)*?)</tr>', content).toList();
+  // i=0时获取的是th头信息，需要跳过
+  for (int i = 1; i < rows.length; i++) {
     Homework homework;
+    String regex = r'<td.*?>((?:.|\n)*?)</td>';
+    String content = rows[i].group(1);
 
     // 获取表格的所有列并整理成Homework对象
-    homework = Homework.fromMatchList(matchAll(regex, row.group(1)).toList());
+    homework = Homework.fromMatchList(matchAll(regex, content).toList());
     result.add(homework);
-  });
+  }
 
   return result;
 }
 
 /// 获取作业详情信息
+///
+/// 登录后访问
 Future<String> getHomeworkDetail(String homeworkId) async {
-  String content = await request.getContent(homeworkDetailUrl + homeworkId);
   String regex = r"<input type='hidden'.*?value='(.*?)'>";
+  String content = await request.getContent(homeworkDetailUrl + homeworkId);
+  if (content == null) {
+    return null;
+  }
+
   Match match = matchOne(regex, content);
   if (match != null) {
     String html = match.group(1);

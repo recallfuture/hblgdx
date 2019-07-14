@@ -25,7 +25,18 @@ class Homework {
   /// 作业结果链接
   String resultUrl;
 
-  /// 从一列数据中获取homework对象
+  String toString() {
+    return 'id=$id\n'
+        'title=$title\n'
+        'datetime=$dateTime\n'
+        'score=$score\n'
+        'publisher=$publisher\n'
+        'countUrl=$countUrl\n'
+        'submitUrl=$submitUrl\n'
+        'resultUrl=$resultUrl';
+  }
+
+  /// 从一行数据中获取homework对象
   static Homework fromMatchList(List<Match> cols) {
     Homework result = new Homework();
 
@@ -67,8 +78,7 @@ class Homework {
   /// 获取作业名
   static String _getHomeworkTitle(String content) {
     // 匹配作业名
-    Match m = matchOne(r'<a.*?>(\S+)(?:.|\n)*?</a>', content);
-    return m != null ? m.group(1) : null;
+    return matchOne(r'<a.*?>(\S+)(?:.|\n)*?</a>', content)?.group(1);
   }
 
   /// 获取作业截至日期
@@ -96,8 +106,7 @@ class Homework {
   /// 获取发布人姓名
   static String _getHomeworkPublisher(String content) {
     // 匹配发布人
-    Match m = matchOne(r'(\S+)', content);
-    return m != null ? m.group(1) : null;
+    return matchOne(r'(\S+)', content)?.group(1);
   }
 
   /// 获取统计信息链接
