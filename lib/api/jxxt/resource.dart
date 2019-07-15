@@ -1,8 +1,30 @@
+import 'package:hblgdx/model/course.dart';
 import 'package:hblgdx/model/resource.dart';
 import 'package:hblgdx/utils/regex.dart';
 import 'package:hblgdx/utils/request.dart';
 
 import 'base.dart';
+
+/// 获取所有的课程号组成的列表
+Future<List<Course>> getAllCourses() async {
+  String regex = r'<p class="title">\s+<a.+?courseId=(\d+).+?>\s+(\S+)(?:.|\n)*?</p>';
+  String content = await request.getContent(courseListUrl);
+  if (content == null) {
+    return null;
+  }
+
+  List<Course> courses = new List();
+  matchAll(regex, content).forEach((match) {
+    Course course = new Course();
+
+    course.id = match.group(1);
+    course.name = match.group(2);
+
+    courses.add(course);
+  });
+
+  return courses;
+}
 
 /// 用正则匹配字符串里的所有文件夹信息
 List<Resource> _getFolders(String content) {

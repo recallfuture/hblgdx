@@ -11,7 +11,7 @@ import 'base.dart';
 Future<Map<String, String>> getCourseMap() async {
   Map<String, String> result = new Map();
 
-  String content = await request.getContent(courseListUrl);
+  String content = await request.getContent(reminderListUrl);
   if (content == null) {
     return null;
   }

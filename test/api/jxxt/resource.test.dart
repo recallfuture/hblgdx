@@ -1,5 +1,6 @@
 import 'package:hblgdx/api/jxxt/login.dart';
 import 'package:hblgdx/api/jxxt/resource.dart';
+import 'package:hblgdx/model/course.dart';
 import 'package:hblgdx/model/resource.dart';
 import 'package:test_api/test_api.dart';
 
@@ -12,6 +13,14 @@ void main() {
 
   tearDownAll(() async {
     await logout();
+  });
+
+  test('getAllCourses should success', () async {
+    List<Course> courses = await getAllCourses();
+    expect(courses != null, true);
+    expect(courses.length > 0, true);
+    expect(courses[0].id, '32333');
+    expect(courses[0].name, '数据库原理');
   });
 
   test('getResourceList should success', () async {
