@@ -5,7 +5,7 @@ import 'package:hblgdx/utils/request.dart';
 import 'base.dart';
 
 /// 用正则匹配字符串里的所有文件夹信息
-List<Resource> getFolders(String content) {
+List<Resource> _getFolders(String content) {
   String regex =
       r'<a href="listview.jsp\?acttype=enter&folderid=(\d+)&lid=(\d+)" title="">(.*?)</a>';
   List<Resource> resources = new List();
@@ -26,7 +26,7 @@ List<Resource> getFolders(String content) {
 }
 
 /// 用正则匹配字符串里的所有文件信息
-List<Resource> getFiles(String content) {
+List<Resource> _getFiles(String content) {
   String regex =
       r'<a href="preview/download_preview.jsp\?fileid=(\d+)&resid=(\d+)&lid=(\d+)"(?:.|\n)*?>(.*?)</a>';
   List<Resource> resources = new List();
@@ -60,8 +60,8 @@ Future<List<Resource>> getResourceList(String courseId,
   }
 
   List<Resource> resources = new List();
-  resources.addAll(getFolders(content));
-  resources.addAll(getFiles(content));
+  resources.addAll(_getFolders(content));
+  resources.addAll(_getFiles(content));
 
   return resources;
 }
