@@ -13,24 +13,24 @@ Future<List<Course>> getAllCourses() async {
     return null;
   }
 
-  List<Course> courses = new List();
+  List<Course> result = new List();
   matchAll(regex, content).forEach((match) {
-    Course course = new Course();
+    String courseId = match.group(1);
+    String courseName = match.group(2);
 
-    course.id = match.group(1);
-    course.name = match.group(2);
+    Course course = new Course(courseId, courseName);
 
-    courses.add(course);
+    result.add(course);
   });
 
-  return courses;
+  return result;
 }
 
 /// 用正则匹配字符串里的所有文件夹信息
 List<Resource> _getFolders(String content) {
   String regex =
       r'<a href="listview.jsp\?acttype=enter&folderid=(\d+)&lid=(\d+)" title="">(.*?)</a>';
-  List<Resource> resources = new List();
+  List<Resource> result = new List();
   matchAll(regex, content).forEach((match) {
     String folderId = match.group(1);
     String lId = match.group(2);
@@ -42,16 +42,16 @@ List<Resource> _getFolders(String content) {
     resource.name = folderName;
     resource.type = ResourceType.folder;
 
-    resources.add(resource);
+    result.add(resource);
   });
-  return resources;
+  return result;
 }
 
 /// 用正则匹配字符串里的所有文件信息
 List<Resource> _getFiles(String content) {
   String regex =
       r'<a href="preview/download_preview.jsp\?fileid=(\d+)&resid=(\d+)&lid=(\d+)"(?:.|\n)*?>(.*?)</a>';
-  List<Resource> resources = new List();
+  List<Resource> result = new List();
   matchAll(regex, content).forEach((match) {
     String fileId = match.group(1);
     String resId = match.group(2);
@@ -65,9 +65,9 @@ List<Resource> _getFiles(String content) {
     resource.name = fileName;
     resource.type = ResourceType.file;
 
-    resources.add(resource);
+    result.add(resource);
   });
-  return resources;
+  return result;
 }
 
 /// 获取资源列表
@@ -81,9 +81,9 @@ Future<List<Resource>> getResourceList(String courseId,
     return null;
   }
 
-  List<Resource> resources = new List();
-  resources.addAll(_getFolders(content));
-  resources.addAll(_getFiles(content));
+  List<Resource> result = new List();
+  result.addAll(_getFolders(content));
+  result.addAll(_getFiles(content));
 
-  return resources;
+  return result;
 }

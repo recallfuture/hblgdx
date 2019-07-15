@@ -5,4 +5,6 @@ class Course {
 
   /// 课程名
   String name;
+
+  Course(this.id, this.name);
 }

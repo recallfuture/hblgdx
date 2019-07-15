@@ -1,5 +1,6 @@
 import 'package:hblgdx/api/jxxt/homework.dart';
 import 'package:hblgdx/api/jxxt/login.dart';
+import 'package:hblgdx/model/course.dart';
 import 'package:hblgdx/model/homework.dart';
 import 'package:test_api/test_api.dart';
 
@@ -15,8 +16,8 @@ void main() {
   });
 
   test('getCourseMap should success', () async {
-    Map map = await getCourseMap();
-    expect(map != null, true);
+    List<Course> list = await getReminderList();
+    expect(list != null, true);
   });
 
   test('getHomeworkList should success', () async {

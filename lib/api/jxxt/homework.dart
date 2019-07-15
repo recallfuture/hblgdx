@@ -1,3 +1,4 @@
+import 'package:hblgdx/model/course.dart';
 import 'package:hblgdx/model/homework.dart';
 import 'package:hblgdx/utils/regex.dart';
 import 'package:hblgdx/utils/request.dart';
@@ -8,8 +9,8 @@ import 'base.dart';
 ///
 /// 需要登录后访问
 /// 返回由课程号和课程名组成的map
-Future<Map<String, String>> getCourseMap() async {
-  Map<String, String> result = new Map();
+Future<List<Course>> getReminderList() async {
+  List<Course> result = new List();
 
   String content = await request.getContent(reminderListUrl);
   if (content == null) {
@@ -22,7 +23,10 @@ Future<Map<String, String>> getCourseMap() async {
   matchAll(regex, content).forEach((m) {
     String courseId = m.group(1).trim();
     String courseName = m.group(2).trim();
-    result[courseId] = courseName;
+
+    Course course = new Course(courseId, courseName);
+
+    result.add(course);
   });
 
   return result;
