@@ -1,16 +1,42 @@
-# hblgdx
+# 华北理工大学综合查询APP
 
-华北理工大学的信息查询app
+用flutter写的华北理工大学综合查询APP，查询结果爬取自华北理工大学教学系统和教务系统。
 
-## Getting Started
+## 开始
 
-This project is a starting point for a Flutter application.
+把项目clone或下载到本地，然后用idea，vs code之类ide的打开即可，推荐用idea。
 
-A few resources to get you started if this is your first Flutter project:
+## 目录结构
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+```
+.
+├── android                             // 导出成安卓所需的配置文件夹
+├── lib                                 // 主代码目录
+│   ├── api                             // 封装访问网站并获取数据的一系列api
+│   │   ├── jwxt                        // 教务系统的api
+│   │   └── jxxt                        // 教学系统的api
+│   ├── model                           // 实体类
+│   └── utils                           // 工具类
+├── pubspec.lock
+├── pubspec.yaml
+├── README.md
+└── test                                // 测试代码目录
+```
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 文档
+
+### utils/request.dart
+
+封装了dio常用操作，如get，post，还有直接获取响应文本的方法。
+
+### utils/regex.dart
+
+封装了常用的正则匹配方法。
+
+### api/jxxt/base.dart
+
+教学系统api的所用到的所有链接地址。
+
+### api/jxxt/login.dart
+
+教学系统的登录和注销方法，注意登录时需要post提交csrf token。

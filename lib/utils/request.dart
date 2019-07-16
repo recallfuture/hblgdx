@@ -6,6 +6,7 @@ import 'package:gbk2utf8/gbk2utf8.dart';
 
 export 'package:dio/dio.dart';
 
+/// 封装dio操作的的请求类
 class Request {
   Dio _dio = Dio();
 
@@ -19,6 +20,7 @@ class Request {
   void _addInterceptors() {
     // 添加cookie和日志的拦截器
     _dio.interceptors.add(CookieManager(CookieJar()));
+    // _dio.interceptors.add(LogInterceptor(responseBody: false));
   }
 
   /// 添加默认配置
@@ -53,11 +55,12 @@ class Request {
   }
 
   /// 获取转码后的响应文本
+  /// 因为教务系统和教学系统的页面都是GBK编码，所以要进行一次转码
   ///
   /// url: 请求地址
   Future<String> getContent(String url) async {
     // 获取字节流并转换成gbk编码的文本
-    Response<List<int>> response = await request.getStream(url);
+    Response<List<int>> response = await getStream(url);
     if (response.statusCode == 200) {
       return gbk.decode(response.data);
     }
@@ -79,5 +82,5 @@ class Request {
   }
 }
 
-/// 实例化方便使用
+// 实例化方便使用
 Request request = new Request();
