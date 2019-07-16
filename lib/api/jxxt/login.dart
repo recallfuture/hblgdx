@@ -60,7 +60,10 @@ int _getErrorCode(String content, int defaultCode) {
 /// 403为帐号被锁，无权进入
 /// 500为网络错误
 Future<int> login(String username, String password) async {
-  if (username == null || password == null) {
+  if (username == null ||
+      username.isEmpty ||
+      password == null ||
+      password.isEmpty) {
     return 400;
   }
 
@@ -91,7 +94,7 @@ Future<int> login(String username, String password) async {
   }
 }
 
-/// 登出
-logout() async {
+/// 注销
+Future<void> logout() async {
   await request.get(logoutUrl);
 }
