@@ -11,3 +11,9 @@ const String loginUrl = baseUrl + 'loginAction.do';
 
 /// 注销地址
 const String logoutUrl = baseUrl + 'logout.do';
+
+/// 全部及格成绩查询地址
+const String jgScoreUrl = baseUrl + 'gradeLnAllAction.do?type=ln&oper=qb';
+
+/// 不及格成绩查询地址
+const String bjgScoreUrl = baseUrl + 'gradeLnAllAction.do?type=ln&oper=bjg';
