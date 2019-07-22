@@ -13,7 +13,6 @@ class _CourseTablePageState extends State<CourseTablePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(),
-      bottomNavigationBar: buildBottomNavigationBar(),
       body: buildBody(),
     );
   }
@@ -22,35 +21,6 @@ class _CourseTablePageState extends State<CourseTablePage> {
     return AppBar(
       centerTitle: true,
       title: Text('第一学期'),
-    );
-  }
-
-  Widget buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      currentIndex: 1,
-      backgroundColor: Colors.blueGrey,
-      type: BottomNavigationBarType.fixed,
-      iconSize: 20,
-      selectedItemColor: Colors.cyan[100],
-      unselectedItemColor: Colors.white,
-      items: [
-        BottomNavigationBarItem(
-          icon: ImageIcon(Image.asset('assets/homework.png').image),
-          title: Text('作业'),
-        ),
-        BottomNavigationBarItem(
-          icon: ImageIcon(Image.asset('assets/course.png').image),
-          title: Text('课表'),
-        ),
-        BottomNavigationBarItem(
-          icon: ImageIcon(Image.asset('assets/resource.png').image),
-          title: Text('资源'),
-        ),
-        BottomNavigationBarItem(
-          icon: ImageIcon(Image.asset('assets/score.png').image),
-          title: Text('成绩'),
-        ),
-      ],
     );
   }
 

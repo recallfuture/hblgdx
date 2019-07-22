@@ -20,7 +20,7 @@ class Request {
   void _addInterceptors() {
     // 添加cookie和日志的拦截器
     _dio.interceptors.add(CookieManager(CookieJar()));
-    // _dio.interceptors.add(LogInterceptor(responseBody: false));
+    _dio.interceptors.add(LogInterceptor(responseBody: false));
   }
 
   /// 添加默认配置
