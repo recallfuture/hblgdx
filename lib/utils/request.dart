@@ -38,6 +38,7 @@ class Request {
         ContentType.parse("application/x-www-form-urlencoded");
     // 任意HTTP响应码均不报错
     _dio.options.validateStatus = (code) => true;
+    _dio.options.connectTimeout = 5000;
   }
 
   /// get方式获取响应

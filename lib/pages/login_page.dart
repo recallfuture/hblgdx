@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:hblgdx/api/jxxt/login.dart' deferred as jxxt;
 import 'package:hblgdx/api/myncmc/login.dart' deferred as myncmc;
+import 'package:hblgdx/utils/data_store.dart';
 import 'package:oktoast/oktoast.dart';
 
-class BindAccountPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  _BindAccountPageState createState() => _BindAccountPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _BindAccountPageState extends State<BindAccountPage> {
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   FocusNode _jwPasswordFieldNode = FocusNode();
   FocusNode _jxPasswordFieldNode = FocusNode();
-  String _username;
-  String _jwPassword;
-  String _jxPassword;
+  String _username = DataStore.username;
+  String _jwPassword = DataStore.jwxtPassword;
+  String _jxPassword = DataStore.jxxtPassword;
   bool _isObscure = true;
   Color _eyeColor = Colors.white54;
   bool _waiting = false;
@@ -111,6 +112,53 @@ class _BindAccountPageState extends State<BindAccountPage> {
       },
       onSaved: (String value) => _username = value.trim(),
       onEditingComplete: () =>
+          FocusScope.of(context).requestFocus(_jxPasswordFieldNode),
+    );
+  }
+
+  Widget buildJxxtPasswordTextField(BuildContext context) {
+    return TextFormField(
+      style: TextStyle(color: Colors.white),
+      focusNode: _jxPasswordFieldNode,
+      initialValue: this._jxPassword,
+      onSaved: (String value) => _jxPassword = value.trim(),
+      obscureText: _isObscure,
+      validator: (String value) {
+        setState(() {
+          _jxPassword = value;
+        });
+        if (value.isEmpty) {
+          return '不能为空';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+        labelText: '请输入教学系统密码',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: new BorderSide(color: Colors.white),
+        ),
+        labelStyle: TextStyle(color: Colors.white),
+        suffixIcon: IconButton(
+          icon: Icon(
+            Icons.remove_red_eye,
+            color: _eyeColor,
+          ),
+          onPressed: () {
+            setState(
+                  () {
+                _isObscure = !_isObscure;
+                _eyeColor = _isObscure ? Colors.white54 : Colors.white;
+              },
+            );
+          },
+        ),
+      ),
+      onEditingComplete: () =>
           FocusScope.of(context).requestFocus(_jwPasswordFieldNode),
     );
   }
@@ -157,54 +205,14 @@ class _BindAccountPageState extends State<BindAccountPage> {
           },
         ),
       ),
-      onEditingComplete: () =>
-          FocusScope.of(context).requestFocus(_jxPasswordFieldNode),
-    );
-  }
-
-  Widget buildJxxtPasswordTextField(BuildContext context) {
-    return TextFormField(
-      style: TextStyle(color: Colors.white),
-      focusNode: _jxPasswordFieldNode,
-      initialValue: this._jxPassword,
-      onSaved: (String value) => _jxPassword = value.trim(),
-      obscureText: _isObscure,
-      validator: (String value) {
-        setState(() {
-          _jxPassword = value;
-        });
-        if (value.isEmpty) {
-          return '不能为空';
+      onEditingComplete: () {
+        try {
+          _submit();
+        } catch (e) {
+          _stopWait();
+          _showToast('登录失败(${e.toString()})');
         }
-        return null;
       },
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-        labelText: '请输入教学系统密码',
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(30)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: new BorderSide(color: Colors.white),
-        ),
-        labelStyle: TextStyle(color: Colors.white),
-        suffixIcon: IconButton(
-          icon: Icon(
-            Icons.remove_red_eye,
-            color: _eyeColor,
-          ),
-          onPressed: () {
-            setState(
-              () {
-                _isObscure = !_isObscure;
-                _eyeColor = _isObscure ? Colors.white54 : Colors.white;
-              },
-            );
-          },
-        ),
-      ),
-      onEditingComplete: _submit,
     );
   }
 
@@ -225,13 +233,19 @@ class _BindAccountPageState extends State<BindAccountPage> {
       color: Colors.deepPurpleAccent,
       padding: EdgeInsets.symmetric(vertical: 10),
       shape: StadiumBorder(),
-      onPressed: _submit,
+      onPressed: () {
+        try {
+          _submit();
+        } catch (e) {
+          _stopWait();
+          _showToast('登录失败(${e.toString()})');
+        }
+      },
     );
   }
 
+  // 提交表单并登录
   _submit() async {
-    _showToast('开始登录');
-
     // 正在登录等待中就不继续执行下面的了
     if (this._waiting) {
       return;
@@ -265,6 +279,16 @@ class _BindAccountPageState extends State<BindAccountPage> {
 
     _stopWait();
     _showToast('登录成功');
+
+    // 存储下来
+    await DataStore.setIsSignedIn(true);
+    await DataStore.setUsername(_username);
+    await DataStore.setjxxtPassword(_jxPassword);
+    await DataStore.setjwxtPassword(_jwPassword);
+
+    // 回到主页并不允许返回
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        '/', (route) => route == null);
   }
 
   _startWait() {
@@ -282,6 +306,7 @@ class _BindAccountPageState extends State<BindAccountPage> {
   _showToast(String msg) {
     showToast(
       msg,
+      duration: Duration(seconds: 2),
       position: ToastPosition.top,
       backgroundColor: Colors.white,
       textStyle: TextStyle(color: Colors.black),

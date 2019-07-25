@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:hblgdx/utils/data_store.dart';
 import 'package:oktoast/oktoast.dart';
 
-import 'pages/bind_account_page.dart';
+import 'pages/home_page.dart';
+import 'pages/login_page.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  await DataStore.init();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -24,7 +29,11 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blueGrey,
         ),
-        home: BindAccountPage(),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => DataStore.isSignedIn ? HomePage() : LoginPage(),
+          '/login': (context) => LoginPage(),
+        },
       ),
     );
   }
