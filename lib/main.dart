@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: '校园查',
         theme: ThemeData(
-          primarySwatch: Colors.blueGrey,
+          primaryColor: Colors.deepPurpleAccent,
         ),
         initialRoute: '/',
         routes: {

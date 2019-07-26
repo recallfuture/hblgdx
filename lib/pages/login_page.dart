@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color.fromARGB(255, 21, 22, 31),
+      color: Color.fromARGB(255, 22, 22, 32),
       child: Stack(
         children: <Widget>[
           Positioned(
@@ -283,7 +283,9 @@ class _LoginPageState extends State<LoginPage> {
 
     // 回到主页并不允许返回
     Navigator.of(context).pushNamedAndRemoveUntil(
-        '/', (route) => route == null);
+      '/',
+          (route) => route == null,
+    );
   }
 
   _startWait() {

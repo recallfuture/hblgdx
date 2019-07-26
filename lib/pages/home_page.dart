@@ -3,6 +3,7 @@ import 'package:hblgdx/pages/course_table_page.dart';
 import 'package:hblgdx/pages/homework_page.dart';
 import 'package:hblgdx/pages/resource_page.dart';
 import 'package:hblgdx/pages/score_page.dart';
+import 'package:hblgdx/utils/data_store.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -65,55 +66,44 @@ class _HomePageState extends State<HomePage> {
               Colors.blue[50].withAlpha(200), BlendMode.lighten),
         ),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          _buildAccount(
-            '教学：',
-            '201643710101',
-            onPressed: _showUnbindJxAccountDialog,
-          ),
-          _buildAccount(
-            '教务：',
-            '201643710101',
-            onPressed: _showUnbindJwAccountDialog,
-          ),
-        ],
+      child: _buildAccount(
+        DataStore.username,
       ),
     );
   }
 
   /// 帐号
-  Widget _buildAccount(String title, String account, {onPressed}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildAccount(String account) {
+    return Column(
       children: <Widget>[
-        Text(
-          title,
-          style: _boldStyle,
-        ),
-        Text(account),
-        FlatButton(
-          child: Text(
-            '解绑',
-            style: TextStyle(
-              color: Colors.red,
-              fontWeight: FontWeight.bold,
+        Text('欢迎', style: TextStyle(fontSize: 30)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(account),
+            FlatButton(
+              child: Text(
+                '注销',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onPressed: _showLogOutDialog,
             ),
-          ),
-          onPressed: onPressed,
-        ),
+          ],
+        )
       ],
     );
   }
 
-  _showUnbindJwAccountDialog() {
+  _showLogOutDialog() {
     showDialog(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: Text('确定解绑么？'),
-          content: Text('解绑后将无法使用查成绩功能'),
+          title: Text('确定注销么？'),
+          content: Text('注销后将需要重新登录才能使用所有功能'),
           actions: <Widget>[
             MaterialButton(
               child: Text('取消'),
@@ -123,34 +113,12 @@ class _HomePageState extends State<HomePage> {
             ),
             MaterialButton(
               child: Text('确定'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  _showUnbindJxAccountDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: Text('确定解绑么？'),
-          content: Text('解绑后将无法使用查作业，资源等功能'),
-          actions: <Widget>[
-            MaterialButton(
-              child: Text('取消'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            MaterialButton(
-              child: Text('确定'),
-              onPressed: () {
-                Navigator.pop(context);
+              onPressed: () async {
+                await DataStore.setIsSignedIn(false);
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/',
+                      (route) => route == null,
+                );
               },
             ),
           ],
@@ -161,8 +129,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
-      backgroundColor: Colors.blueGrey,
-      selectedItemColor: Colors.cyan[100],
+      backgroundColor: Color.fromARGB(255, 44, 44, 61),
+      selectedItemColor: Color.fromARGB(255, 125, 249, 177),
       unselectedItemColor: Colors.white,
       iconSize: 20,
       type: BottomNavigationBarType.fixed,
