@@ -28,6 +28,9 @@ class Homework {
   /// 所属的课程
   Course course;
 
+  /// 作业详情
+  String detail;
+
   String toString() {
     return 'id=$id\n'
         'title=$title\n'

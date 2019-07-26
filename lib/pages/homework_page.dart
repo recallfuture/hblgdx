@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:hblgdx/api/jxxt/homework.dart';
 import 'package:hblgdx/api/jxxt/login.dart';
 import 'package:hblgdx/components/homework_item.dart';
@@ -133,7 +134,11 @@ class _HomeworkPageState extends State<HomeworkPage> {
         children: List<Widget>.generate(_homeworkList.length, (index) {
           Homework homework = _homeworkList[index];
           return HomeworkItem(
-              homework.course.name, homework.title, homework.dateTime);
+            homework.course.name,
+            homework.title,
+            homework.dateTime,
+            onTap: () => _showHomeworkDetail(homework),
+          );
         }),
       ),
     );
@@ -149,7 +154,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
     try {
       // 登录
       if (!DataStore.isSignedInJxxt) {
-        loadingText = '登录中';
+        _setLoadingText('登录中');
         int code = await login(DataStore.username, DataStore.jxxtPassword);
         if (code != 200) {
           throw Error();
@@ -158,7 +163,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
       }
 
       // 获取课程信息
-      loadingText = '获取课程信息';
+      _setLoadingText('获取课程信息');
       var courses = await getReminderList();
 //      var courses = await getAllCourses();
       if (courses == null) {
@@ -167,7 +172,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
       }
 
       // 获取作业信息
-      loadingText = '获取作业信息';
+      _setLoadingText('获取作业信息');
       for (int i = 0; i < courses.length; i++) {
         var list = await getHomeworkList(courses[i].id);
         list.forEach((homework) => homework.course = courses[i]);
@@ -175,7 +180,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
       }
     } catch (e) {
       print(e.toString());
-      loadingText = e.toString();
+      _setLoadingText(e.toString());
       _homeworkList = null;
     } finally {
       // 更新
@@ -183,5 +188,47 @@ class _HomeworkPageState extends State<HomeworkPage> {
         _homeworkList = _homeworkList;
       });
     }
+  }
+
+  _setLoadingText(String text) {
+    setState(() {
+      loadingText = text;
+    });
+  }
+
+  void _showHomeworkDetail(Homework homework) async {
+    // 没获取就先获取
+    if (homework.detail == null) {
+      homework.detail = await getHomeworkDetail(homework.id);
+    }
+
+    // 显示详细信息的对话框
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Padding(
+            padding: EdgeInsets.all(20.0),
+            child: ListView(children: <Widget>[
+              Text(
+                homework.title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Html(
+                data: homework.detail ?? '读取错误',
+                useRichText: true,
+                padding: EdgeInsets.all(8.0),
+                defaultTextStyle: TextStyle(fontSize: 20.0),
+              ),
+            ]),
+          ),
+        );
+      },
+    );
   }
 }
