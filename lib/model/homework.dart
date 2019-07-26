@@ -1,3 +1,5 @@
+import 'course.dart';
+
 class Homework {
   /// 作业id
   String id;
@@ -22,6 +24,9 @@ class Homework {
 
   /// 作业结果链接
   String resultUrl;
+
+  /// 所属的课程
+  Course course;
 
   String toString() {
     return 'id=$id\n'

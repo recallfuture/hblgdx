@@ -280,6 +280,8 @@ class _LoginPageState extends State<LoginPage> {
     await DataStore.setUsername(_username);
     await DataStore.setjxxtPassword(_jxPassword);
     await DataStore.setjwxtPassword(_jwPassword);
+    DataStore.isSignedInJxxt = true;
+    DataStore.isSignedInMyncmc = true;
 
     // 回到主页并不允许返回
     Navigator.of(context).pushNamedAndRemoveUntil(

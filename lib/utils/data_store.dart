@@ -12,8 +12,17 @@ class DataStore {
   static String _jwxtPassword;
   static String _jxxtPassword;
 
-  // 是否已经登录过
+  // 是否已经登录过（下次进入直接进主页）
   static bool _isSignedIn = false;
+
+  // 是否登录了教务系统
+  static bool isSignedInJwxt = false;
+
+  // 是否登录了教学系统
+  static bool isSignedInJxxt = false;
+
+  // 是否登录了煤医查询系统
+  static bool isSignedInMyncmc = false;
 
   static init() async {
     _sp = await SharedPreferences.getInstance();
