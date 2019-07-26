@@ -205,14 +205,7 @@ class _LoginPageState extends State<LoginPage> {
           },
         ),
       ),
-      onEditingComplete: () {
-        try {
-          _submit();
-        } catch (e) {
-          _stopWait();
-          _showToast('登录失败(${e.toString()})');
-        }
-      },
+      onEditingComplete: _onPressed,
     );
   }
 
@@ -233,15 +226,17 @@ class _LoginPageState extends State<LoginPage> {
       color: Colors.deepPurpleAccent,
       padding: EdgeInsets.symmetric(vertical: 10),
       shape: StadiumBorder(),
-      onPressed: () {
-        try {
-          _submit();
-        } catch (e) {
-          _stopWait();
-          _showToast('登录失败(${e.toString()})');
-        }
-      },
+      onPressed: _onPressed,
     );
+  }
+
+  _onPressed() {
+    try {
+      _submit();
+    } catch (e) {
+      _stopWait();
+      _showToast('登录失败(${e.toString()})');
+    }
   }
 
   // 提交表单并登录
