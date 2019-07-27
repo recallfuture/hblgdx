@@ -106,33 +106,39 @@ class _ScorePageState extends State<ScorePage> {
   Widget _buildScoreReport() {
     // 出现错误
     if (_scoreReport == null) {
-      return Card(
-        color: Colors.red,
-        child: Container(
-          height: 150,
-          padding: EdgeInsets.all(15),
-          child: ListView(
-            children: <Widget>[
-              Text(
-                '出错啦!',
-                style: TextStyle(
-                  fontSize: 25,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                '错误原因：$_errorText',
-                style: TextStyle(color: Colors.white),
-              ),
-              Text(
-                '由于学校服务器不稳定，请尽量减少刷新的频率。'
+      // 套上ListView防止高度出界
+      return ListView(
+        children: <Widget>[
+          Card(
+            color: Colors.red,
+            child: Container(
+              padding: EdgeInsets.all(15),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    '出错啦!',
+                    style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    '错误原因：$_errorText',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  Text(
+                    '由于学校服务器不稳定，请尽量减少刷新的频率。'
                     '如果遇到包含“DioError”的错误，别担心，'
                     '那多半是服务器响应超时了，请刷新重试',
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       );
     }
 
@@ -189,6 +195,12 @@ class _ScorePageState extends State<ScorePage> {
     _isLoading = true;
 
     try {
+      String json = DataStore.scoreReportJson;
+      if (json != null) {
+        _scoreReport = getScoreReportFromJson(json);
+        return;
+      }
+
       // 登录
       if (!DataStore.isSignedInMyncmc) {
         _setLoadingText('登录中');
@@ -201,9 +213,10 @@ class _ScorePageState extends State<ScorePage> {
 
       // 获取成绩分析单
       _setLoadingText('获取成绩单中');
-      String json = await getScoreJson();
+      json = await getScoreJson();
       print(json);
-      _scoreReport = getScoreReport(json);
+      _scoreReport = getScoreReportFromJson(json);
+      DataStore.setScoreReport(json);
     } catch (e) {
       // 错误处理
       print(e.toString());

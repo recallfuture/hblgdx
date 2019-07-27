@@ -11,6 +11,6 @@ Future<String> getScoreJson() async {
   return (await request.get(scoreUrl)).data;
 }
 
-ScoreReport getScoreReport(String json) {
+ScoreReport getScoreReportFromJson(String json) {
   return ScoreReport.fromJson(JsonDecoder().convert(json));
 }

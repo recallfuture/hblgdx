@@ -278,8 +278,8 @@ class _LoginPageState extends State<LoginPage> {
     // 存储下来
     await DataStore.setIsSignedIn(true);
     await DataStore.setUsername(_username);
-    await DataStore.setjxxtPassword(_jxPassword);
-    await DataStore.setjwxtPassword(_jwPassword);
+    await DataStore.setJxxtPassword(_jxPassword);
+    await DataStore.setJwxtPassword(_jwPassword);
     DataStore.isSignedInJxxt = true;
     DataStore.isSignedInMyncmc = true;
 

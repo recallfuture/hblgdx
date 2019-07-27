@@ -142,6 +142,7 @@ class _HomePageState extends State<HomePage> {
               child: Text('确定'),
               onPressed: () async {
                 await DataStore.setIsSignedIn(false);
+                await DataStore.setScoreReport(null);
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil('/', (route) => route == null);
               },

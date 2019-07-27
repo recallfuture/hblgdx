@@ -7,11 +7,6 @@ class DataStore {
   // 是否首次打开应用
   static bool _isFirstTime = true;
 
-  // 用户信息
-  static String _username;
-  static String _jwxtPassword;
-  static String _jxxtPassword;
-
   // 是否已经登录过（下次进入直接进主页）
   static bool _isSignedIn = false;
 
@@ -42,6 +37,7 @@ class DataStore {
     return _sp.getString('username');
   }
 
+  // 身份信息
   static setUsername(value) async {
     await _sp.setString('username', value);
   }
@@ -50,7 +46,7 @@ class DataStore {
     return _sp.getString('jwxtPassword');
   }
 
-  static setjwxtPassword(value) async {
+  static setJwxtPassword(value) async {
     await _sp.setString('jwxtPassword', value);
   }
 
@@ -58,7 +54,7 @@ class DataStore {
     return _sp.getString('jxxtPassword');
   }
 
-  static setjxxtPassword(value) async {
+  static setJxxtPassword(value) async {
     await _sp.setString('jxxtPassword', value);
   }
 
@@ -70,5 +66,14 @@ class DataStore {
 
   static setIsSignedIn(bool value) async {
     await _sp.setBool('isSignedIn', value);
+  }
+
+  // 成绩信息，缓存到本地
+  static String get scoreReportJson {
+    return _sp.getString('scoreReport');
+  }
+
+  static setScoreReport(value) async {
+    await _sp.setString('scoreReport', value);
   }
 }

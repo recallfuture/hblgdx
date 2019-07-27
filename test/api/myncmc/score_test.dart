@@ -12,7 +12,7 @@ void main() {
     print(json);
     expect(json != null, true);
 
-    var scoreReport = getScoreReport(json);
+    var scoreReport = getScoreReportFromJson(json);
     print(scoreReport);
     expect(scoreReport != null, true);
   });
