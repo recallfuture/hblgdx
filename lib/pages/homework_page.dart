@@ -12,8 +12,9 @@ class HomeworkPage extends StatefulWidget {
 }
 
 class _HomeworkPageState extends State<HomeworkPage> {
-  Future _future;
+  static Future _future;
   static List<Homework> _homeworkList;
+  bool _isLoading = false;
   String _loadingText = '';
   String _errorText = '';
 
@@ -21,12 +22,14 @@ class _HomeworkPageState extends State<HomeworkPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _future = _getHomeworkList();
+
+    if (_future == null) {
+      _future = _getHomeworkList();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: 下拉刷新
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -43,6 +46,12 @@ class _HomeworkPageState extends State<HomeworkPage> {
           centerTitle: true,
 //          elevation: 0,
           backgroundColor: Colors.transparent,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () => _future = _getHomeworkList(),
+            ),
+          ],
         ),
         body: FutureBuilder(
           future: _future,
@@ -148,9 +157,10 @@ class _HomeworkPageState extends State<HomeworkPage> {
 
   /// 获取完整的homework列表
   Future _getHomeworkList() async {
-    if (_homeworkList != null) {
+    if (_isLoading) {
       return;
     }
+    _isLoading = true;
     _homeworkList = new List();
 
     try {
@@ -189,6 +199,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
       setState(() {
         _homeworkList = _homeworkList;
       });
+      _isLoading = false;
     }
   }
 
