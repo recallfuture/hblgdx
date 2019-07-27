@@ -43,7 +43,7 @@ class HomeworkItem extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Icon(
-                              Icons.info,
+                              Icons.error,
                               color: Colors.red,
                               size: 22,
                             ),
