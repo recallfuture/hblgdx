@@ -14,7 +14,8 @@ class HomeworkPage extends StatefulWidget {
 class _HomeworkPageState extends State<HomeworkPage> {
   Future _future;
   static List<Homework> _homeworkList;
-  String loadingText = '';
+  String _loadingText = '';
+  String _errorText = '';
 
   @override
   void initState() {
@@ -25,6 +26,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: 下拉刷新
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -58,7 +60,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
                         new AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                       Text(
-                        loadingText,
+                        _loadingText,
                         style: TextStyle(color: Colors.white),
                       ),
                     ],
@@ -97,7 +99,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
               ),
             ),
             Text(
-              '错误原因：$loadingText',
+              '错误原因：$_errorText',
               style: TextStyle(color: Colors.white),
             ),
           ],
@@ -180,7 +182,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
       }
     } catch (e) {
       print(e.toString());
-      _setLoadingText(e.toString());
+      _setErrorText(e.toString());
       _homeworkList = null;
     } finally {
       // 更新
@@ -192,7 +194,13 @@ class _HomeworkPageState extends State<HomeworkPage> {
 
   _setLoadingText(String text) {
     setState(() {
-      loadingText = text;
+      _loadingText = text;
+    });
+  }
+
+  _setErrorText(String text) {
+    setState(() {
+      _errorText = text;
     });
   }
 
