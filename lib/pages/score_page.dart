@@ -57,35 +57,48 @@ class _ScorePageState extends State<ScorePage> {
             ),
           ],
         ),
-        body: FutureBuilder(
-          future: _future,
-          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-              case ConnectionState.active:
-              case ConnectionState.waiting:
-                return Center(
+        body: Container(
+          margin: EdgeInsets.symmetric(horizontal: 20),
+          child: _buildFuture(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFuture() {
+    return FutureBuilder(
+      future: _future,
+      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.active:
+          case ConnectionState.waiting:
+            return Center(
+              child: Card(
+                child: Container(
+                  padding: EdgeInsets.all(15),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       CircularProgressIndicator(
                         valueColor:
-                        new AlwaysStoppedAnimation<Color>(Colors.white),
+                        new AlwaysStoppedAnimation<Color>(Colors.green),
                       ),
                       Text(
                         _loadingText,
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.green),
                       ),
                     ],
                   ),
-                );
-              case ConnectionState.done:
-                return _buildScoreReport();
-            }
-            return null;
-          },
-        ),
-      ),
+                ),
+              ),
+            );
+          case ConnectionState.done:
+            return _buildScoreReport();
+        }
+        return null;
+      },
     );
   }
 
@@ -96,7 +109,7 @@ class _ScorePageState extends State<ScorePage> {
       return Card(
         color: Colors.red,
         child: Container(
-          height: 120,
+          height: 150,
           padding: EdgeInsets.all(15),
           child: ListView(
             children: <Widget>[
@@ -112,6 +125,11 @@ class _ScorePageState extends State<ScorePage> {
                 '错误原因：$_errorText',
                 style: TextStyle(color: Colors.white),
               ),
+              Text(
+                '由于学校服务器不稳定，请尽量减少刷新的频率。'
+                    '如果遇到包含“DioError”的错误，别担心，'
+                    '那多半是服务器响应超时了，请刷新重试',
+              ),
             ],
           ),
         ),
@@ -121,49 +139,46 @@ class _ScorePageState extends State<ScorePage> {
     List<Score> scores = _scoreReport.scores;
 
     // 正常渲染
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20),
-      child: ListView(
-        children: <Widget>[
-          Card(
-            child: Container(
-              padding: EdgeInsets.all(15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('姓名：${_scoreReport.name}'),
-                  Text('学号：${_scoreReport.number}'),
-                  Text('系所：${_scoreReport.departmentName}'),
-                  Text('班级：${_scoreReport.className}'),
-                ],
-              ),
+    return ListView(
+      children: <Widget>[
+        Card(
+          child: Container(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('姓名：${_scoreReport.name}'),
+                Text('学号：${_scoreReport.number}'),
+                Text('系所：${_scoreReport.departmentName}'),
+                Text('班级：${_scoreReport.className}'),
+              ],
             ),
           ),
-          SizedBox(
-            height: 20,
-          ),
-          Card(
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 15),
-              child: Column(
-                children: List<Widget>.generate(scores.length, (index) {
-                  return ListTile(
-                    title: Text(scores[index].name),
-                    leading: CircleAvatar(
-                      backgroundColor:
-                      scores[index].score >= 60 ? Colors.green : Colors.red,
-                      child: Text(
-                        scores[index].score.toString(),
-                        style: TextStyle(color: Colors.white),
-                      ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Card(
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 15),
+            child: Column(
+              children: List<Widget>.generate(scores.length, (index) {
+                return ListTile(
+                  title: Text(scores[index].name),
+                  leading: CircleAvatar(
+                    backgroundColor:
+                    scores[index].score >= 60 ? Colors.green : Colors.red,
+                    child: Text(
+                      scores[index].score.toString(),
+                      style: TextStyle(color: Colors.white),
                     ),
-                  );
-                }),
-              ),
+                  ),
+                );
+              }),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

@@ -72,18 +72,24 @@ class _HomeworkPageState extends State<HomeworkPage> {
           case ConnectionState.active:
           case ConnectionState.waiting:
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  CircularProgressIndicator(
-                    valueColor:
-                    new AlwaysStoppedAnimation<Color>(Colors.white),
+              child: Card(
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      CircularProgressIndicator(
+                        valueColor:
+                        new AlwaysStoppedAnimation<Color>(Colors.green),
+                      ),
+                      Text(
+                        _loadingText,
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ],
                   ),
-                  Text(
-                    _loadingText,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
+                ),
               ),
             );
           case ConnectionState.done:
