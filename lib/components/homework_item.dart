@@ -11,64 +11,70 @@ class HomeworkItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 120,
-        margin: EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(5),
+    return Container(
+      margin: EdgeInsets.only(bottom: 20),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Card(
+          child: Stack(
+            children: <Widget>[
+              buildLabelImage(),
+              buildContent(),
+            ],
+          ),
         ),
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              top: 0,
-              right: 15,
-              child: Image.asset(
-                'assets/lable.png',
-                scale: 3,
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              Icons.error,
-                              color: Colors.red,
-                              size: 22,
-                            ),
-                            SizedBox(width: 5),
-                            Text(_courseName, style: TextStyle(fontSize: 20)),
-                          ],
-                        ),
-                        Text(
-                          _homeworkTitle,
-                          style: TextStyle(fontSize: 16),
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: false,
-                        ),
-                        Text(
-                          '提交日期：$_endDate',
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
-                        ),
-                      ],
+      ),
+    );
+  }
+
+  Widget buildLabelImage() {
+    return Positioned(
+      top: 0,
+      right: 15,
+      child: Image.asset(
+        'assets/label.png',
+        scale: 3,
+      ),
+    );
+  }
+
+  Widget buildContent() {
+    return Container(
+      height: 120,
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.error,
+                      color: Colors.red,
+                      size: 22,
                     ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
+                    SizedBox(width: 5),
+                    Text(_courseName, style: TextStyle(fontSize: 20)),
+                  ],
+                ),
+                Text(
+                  _homeworkTitle,
+                  style: TextStyle(fontSize: 16),
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                ),
+                Text(
+                  '提交日期：$_endDate',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

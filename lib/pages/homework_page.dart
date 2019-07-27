@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:hblgdx/api/jxxt/homework.dart';
 import 'package:hblgdx/api/jxxt/login.dart';
+import 'package:hblgdx/api/jxxt/resource.dart';
 import 'package:hblgdx/components/homework_item.dart';
 import 'package:hblgdx/model/homework.dart';
 import 'package:hblgdx/utils/data_store.dart';
@@ -20,7 +21,6 @@ class _HomeworkPageState extends State<HomeworkPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     if (_future == null) {
@@ -76,7 +76,10 @@ class _HomeworkPageState extends State<HomeworkPage> {
                   ),
                 );
               case ConnectionState.done:
-                return _buildHomeworkList();
+                return Container(
+                  padding: EdgeInsets.all(20),
+                  child: _buildHomeworkList(),
+                );
             }
             return null;
           },
@@ -89,50 +92,44 @@ class _HomeworkPageState extends State<HomeworkPage> {
   Widget _buildHomeworkList() {
     // 出现错误
     if (_homeworkList == null) {
-      return Container(
-        height: 120,
-        margin: EdgeInsets.all(20),
-        padding: EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: ListView(
-          children: <Widget>[
-            Text(
-              '出错啦!',
-              style: TextStyle(
-                fontSize: 25,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+      return Card(
+        color: Colors.red,
+        child: SizedBox(
+          height: 120,
+          child: ListView(
+            children: <Widget>[
+              Text(
+                '出错啦!',
+                style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            Text(
-              '错误原因：$_errorText',
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
+              Text(
+                '错误原因：$_errorText',
+                style: TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
         ),
       );
     }
 
     // 无待交作业
     if (_homeworkList.length == 0) {
-      return Container(
-        height: 120,
-        margin: EdgeInsets.all(20),
-        padding: EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          color: Colors.green,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Center(
-          child: Text(
-            '无待交作业，安心休息吧',
-            style: TextStyle(
-              fontSize: 25,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+      return Card(
+        color: Colors.green,
+        child: SizedBox(
+          height: 120,
+          child: Center(
+            child: Text(
+              '无待交作业，安心休息吧',
+              style: TextStyle(
+                fontSize: 25,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
@@ -140,9 +137,10 @@ class _HomeworkPageState extends State<HomeworkPage> {
     }
 
     // 有作业
-    return Container(
-      child: ListView(
-        children: List<Widget>.generate(_homeworkList.length, (index) {
+    return ListView(
+      children: List<Widget>.generate(
+        _homeworkList.length,
+            (index) {
           Homework homework = _homeworkList[index];
           return HomeworkItem(
             homework.course.name,
@@ -150,7 +148,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
             homework.dateTime,
             onTap: () => _showHomeworkDetail(homework),
           );
-        }),
+        },
       ),
     );
   }
@@ -169,18 +167,18 @@ class _HomeworkPageState extends State<HomeworkPage> {
         _setLoadingText('登录中');
         int code = await login(DataStore.username, DataStore.jxxtPassword);
         if (code != 200) {
-          throw Error();
+          throw Exception('登录错误，错误码$code');
         }
         DataStore.isSignedInJxxt = true;
       }
 
       // 获取课程信息
       _setLoadingText('获取课程信息');
-      var courses = await getReminderList();
-//      var courses = await getAllCourses();
+//      var courses = await getReminderList();
+      var courses = await getAllCourses();
       if (courses == null) {
         _homeworkList = null;
-        throw Error();
+        throw Exception('课程获取失败');
       }
 
       // 获取作业信息
