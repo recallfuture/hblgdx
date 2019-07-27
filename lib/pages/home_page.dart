@@ -21,6 +21,13 @@ class _HomePageState extends State<HomePage> {
     ScorePage(),
   ];
 
+  List<Color> _bottomBarColor = [
+    Color.fromARGB(255, 44, 44, 61),
+    Color.fromARGB(255, 44, 44, 61),
+    Color.fromARGB(255, 44, 44, 61),
+    Color.fromARGB(255, 38, 124, 160),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,10 +122,8 @@ class _HomePageState extends State<HomePage> {
               child: Text('确定'),
               onPressed: () async {
                 await DataStore.setIsSignedIn(false);
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/',
-                      (route) => route == null,
-                );
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/', (route) => route == null);
               },
             ),
           ],
@@ -129,7 +134,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
-      backgroundColor: Color.fromARGB(255, 44, 44, 61),
+      backgroundColor: _bottomBarColor[_currentIndex],
       selectedItemColor: Color.fromARGB(255, 125, 249, 177),
       unselectedItemColor: Colors.white,
       iconSize: 20,
