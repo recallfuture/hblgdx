@@ -12,8 +12,8 @@ class HomeworkPage extends StatefulWidget {
 }
 
 class _HomeworkPageState extends State<HomeworkPage> {
-  static Future _future;
-  static List<Homework> _homeworkList;
+  Future _future;
+  List<Homework> _homeworkList;
   bool _isLoading = false;
   String _loadingText = '';
   String _errorText = '';
@@ -22,9 +22,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
   void initState() {
     super.initState();
 
-    if (_future == null) {
-      _future = _getHomeworkList();
-    }
+    _future = _getHomeworkList();
   }
 
   @override

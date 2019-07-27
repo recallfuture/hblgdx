@@ -11,8 +11,8 @@ class ScorePage extends StatefulWidget {
 }
 
 class _ScorePageState extends State<ScorePage> {
-  static Future _future;
-  static ScoreReport _scoreReport;
+  Future _future;
+  ScoreReport _scoreReport;
   bool _isLoading = false;
   String _loadingText = '';
   String _errorText = '';
@@ -21,7 +21,10 @@ class _ScorePageState extends State<ScorePage> {
   void initState() {
     super.initState();
 
-    if (_future == null) {
+    String json = DataStore.scoreReportJson;
+    if (json != null) {
+      _scoreReport = getScoreReportFromJson(json);
+    } else {
       _future = _getScoreReport();
     }
   }
@@ -71,6 +74,7 @@ class _ScorePageState extends State<ScorePage> {
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
+            return _buildSuccessReport();
           case ConnectionState.active:
           case ConnectionState.waiting:
             return Center(
@@ -106,42 +110,50 @@ class _ScorePageState extends State<ScorePage> {
   Widget _buildScoreReport() {
     // 出现错误
     if (_scoreReport == null) {
-      // 套上ListView防止高度出界
-      return ListView(
-        children: <Widget>[
-          Card(
-            color: Colors.red,
-            child: Container(
-              padding: EdgeInsets.all(15),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    '出错啦!',
-                    style: TextStyle(
-                      fontSize: 25,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    '错误原因：$_errorText',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  Text(
-                    '由于学校服务器不稳定，请尽量减少刷新的频率。'
-                    '如果遇到包含“DioError”的错误，别担心，'
-                    '那多半是服务器响应超时了，请刷新重试',
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      );
+      return _buildErrorCard();
     }
 
+    return _buildSuccessReport();
+  }
+
+  Widget _buildErrorCard() {
+    // 套上ListView防止高度出界
+    return ListView(
+      children: <Widget>[
+        Card(
+          color: Colors.red,
+          child: Container(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  '出错啦!',
+                  style: TextStyle(
+                    fontSize: 25,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '错误原因：$_errorText',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  '由于学校服务器不稳定，请尽量减少刷新的频率。'
+                      '如果遇到包含“DioError”的错误，别担心，'
+                      '那多半是服务器响应超时了，请刷新重试',
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSuccessReport() {
     List<Score> scores = _scoreReport.scores;
 
     // 正常渲染
@@ -195,12 +207,6 @@ class _ScorePageState extends State<ScorePage> {
     _isLoading = true;
 
     try {
-      String json = DataStore.scoreReportJson;
-      if (json != null) {
-        _scoreReport = getScoreReportFromJson(json);
-        return;
-      }
-
       // 登录
       if (!DataStore.isSignedInMyncmc) {
         _setLoadingText('登录中');
@@ -213,15 +219,18 @@ class _ScorePageState extends State<ScorePage> {
 
       // 获取成绩分析单
       _setLoadingText('获取成绩单中');
-      json = await getScoreJson();
+      String json = await getScoreJson();
       print(json);
       _scoreReport = getScoreReportFromJson(json);
-      DataStore.setScoreReport(json);
+      // 缓存成绩查询结果
+      await DataStore.setScoreReport(json);
     } catch (e) {
       // 错误处理
       print(e.toString());
       _setErrorText(e.toString());
       _scoreReport = null;
+      // 重置查询结果
+      await DataStore.setScoreReport(null);
     } finally {
       // 更新
       setState(() {
