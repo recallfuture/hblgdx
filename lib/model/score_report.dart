@@ -37,10 +37,10 @@ class ScoreReport {
     int scoreNum = length ~/ 6;
     for (int i = 0; i < scoreNum; i++) {
       String name;
-      String totalCredit;
-      String score;
+      double totalCredit;
+      double score;
       String level;
-      String credit;
+      double credit;
       String type;
 
       for (int j = 0; j < 6; j++) {
@@ -50,16 +50,16 @@ class ScoreReport {
             name = value;
             break;
           case 1:
-            totalCredit = value;
+            totalCredit = double.parse(value);
             break;
           case 2:
-            score = value;
+            score = double.parse(value);
             break;
           case 3:
             level = value;
             break;
           case 4:
-            credit = value;
+            credit = double.parse(value);
             break;
           case 5:
             type = value;

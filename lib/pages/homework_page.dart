@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:hblgdx/api/jxxt/homework.dart';
 import 'package:hblgdx/api/jxxt/login.dart';
-import 'package:hblgdx/api/jxxt/resource.dart';
 import 'package:hblgdx/components/homework_item.dart';
 import 'package:hblgdx/model/homework.dart';
 import 'package:hblgdx/utils/data_store.dart';
@@ -53,38 +52,42 @@ class _HomeworkPageState extends State<HomeworkPage> {
             ),
           ],
         ),
-        body: FutureBuilder(
-          future: _future,
-          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-              case ConnectionState.active:
-              case ConnectionState.waiting:
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      CircularProgressIndicator(
-                        valueColor:
-                        new AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                      Text(
-                        _loadingText,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                );
-              case ConnectionState.done:
-                return Container(
-                  padding: EdgeInsets.all(20),
-                  child: _buildHomeworkList(),
-                );
-            }
-            return null;
-          },
-        ),
+        body: _buildFuture(),
       ),
+    );
+  }
+
+  Widget _buildFuture() {
+    return FutureBuilder(
+      future: _future,
+      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.active:
+          case ConnectionState.waiting:
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  CircularProgressIndicator(
+                    valueColor:
+                    new AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                  Text(
+                    _loadingText,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            );
+          case ConnectionState.done:
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: _buildHomeworkList(),
+            );
+        }
+        return null;
+      },
     );
   }
 
@@ -174,8 +177,8 @@ class _HomeworkPageState extends State<HomeworkPage> {
 
       // 获取课程信息
       _setLoadingText('获取课程信息');
-//      var courses = await getReminderList();
-      var courses = await getAllCourses();
+      var courses = await getReminderList();
+//      var courses = await getAllCourses();
       if (courses == null) {
         _homeworkList = null;
         throw Exception('课程获取失败');
@@ -225,7 +228,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return Dialog(
-          child: Padding(
+          child: Container(
             padding: EdgeInsets.all(20.0),
             child: ListView(children: <Widget>[
               Text(

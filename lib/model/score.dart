@@ -1,9 +1,9 @@
 class Score {
   String name;
-  String totalCredit;
-  String score;
+  double totalCredit;
+  double score;
   String level;
-  String credit;
+  double credit;
   String type;
 
   Score(this.name, this.totalCredit, this.score, this.level, this.credit,
