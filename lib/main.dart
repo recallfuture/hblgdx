@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
         title: '校园查',
         theme: ThemeData(
           primaryColor: Colors.deepPurpleAccent,
+          scaffoldBackgroundColor: Colors.black,
         ),
         initialRoute: '/',
         routes: {

@@ -12,27 +12,47 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  TextStyle _boldStyle = TextStyle(fontWeight: FontWeight.bold);
+
+  // 懒加载工厂
+  List _pageFactory = [
+        () => HomeworkPage(),
+        () => CourseTablePage(),
+        () => ResourcePage(),
+        () => ScorePage(),
+  ];
 
   List<Widget> _pages = [
-    HomeworkPage(),
-    CourseTablePage(),
-    ResourcePage(),
-    ScorePage(),
+    Scaffold(),
+    Scaffold(),
+    Scaffold(),
+    Scaffold(),
   ];
 
   List<Color> _bottomBarColor = [
     Color.fromARGB(255, 44, 44, 61),
     Color.fromARGB(255, 44, 44, 61),
-    Color.fromARGB(255, 44, 44, 61),
+    Color.fromARGB(255, 53, 83, 108),
     Color.fromARGB(255, 38, 124, 160),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 懒加载页面
+    if (_pages[_currentIndex] is Scaffold) {
+      _pages[_currentIndex] = _pageFactory[_currentIndex]();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: _buildDrawer(),
-      body: _pages[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
@@ -161,6 +181,9 @@ class _HomePageState extends State<HomePage> {
       onTap: (int index) {
         setState(() {
           _currentIndex = index;
+          if (_pages[_currentIndex] is Scaffold) {
+            _pages[_currentIndex] = _pageFactory[_currentIndex]();
+          }
         });
       },
     );

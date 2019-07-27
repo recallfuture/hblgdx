@@ -28,6 +28,12 @@ class _HomeworkPageState extends State<HomeworkPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _future = null;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
