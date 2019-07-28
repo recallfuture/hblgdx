@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hblgdx/api/jwxt/login.dart' deferred as jwxt;
+import 'package:hblgdx/api/jxxt/login.dart' deferred as jxxt;
 import 'package:hblgdx/pages/course_table_page.dart';
 import 'package:hblgdx/pages/homework_page.dart';
 import 'package:hblgdx/pages/resource_page.dart';
@@ -43,6 +45,15 @@ class _HomePageState extends State<HomePage> {
     if (_pages[_currentIndex] is Scaffold) {
       _pages[_currentIndex] = _pageFactory[_currentIndex]();
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    // 关闭时注销，防止由于登录人数过多导致的登陆失败
+    DataStore.isSignedInJwxt ?? jwxt.logout();
+    DataStore.isSignedInJxxt ?? jxxt.logout();
   }
 
   @override
