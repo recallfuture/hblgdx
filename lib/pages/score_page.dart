@@ -90,7 +90,7 @@ class _ScorePageState extends State<ScorePage> {
           case ConnectionState.done:
             return _buildStateDone();
         }
-        return null;
+        return Container();
       },
     );
   }
@@ -100,7 +100,7 @@ class _ScorePageState extends State<ScorePage> {
   }
 
   Widget _buildStateActive() {
-    return null;
+    return Container();
   }
 
   Widget _buildStateWaiting() {

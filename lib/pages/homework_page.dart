@@ -86,17 +86,17 @@ class _HomeworkPageState extends State<HomeworkPage> {
           case ConnectionState.done:
             return _buildStateDone();
         }
-        return null;
+        return Container();
       },
     );
   }
 
   Widget _buildStateNone() {
-    return null;
+    return Container();
   }
 
   Widget _buildStateActive() {
-    return null;
+    return Container();
   }
 
   Widget _buildStateWaiting() {
