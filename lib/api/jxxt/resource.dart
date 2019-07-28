@@ -7,7 +7,8 @@ import 'base.dart';
 
 /// 获取所有的课程号组成的列表
 Future<List<Course>> getAllCourses() async {
-  String regex = r'<p class="title">\s+<a.+?courseId=(\d+).+?>\s+(\S+)(?:.|\n)*?</p>';
+  String regex =
+      r'<p class="title">\s+<a.+?courseId=(\d+).+?>\s+(\S+)(?:.|\n)*?</p>';
   String content = await request.getContent(courseListUrl);
   if (content == null) {
     return null;
@@ -24,6 +25,25 @@ Future<List<Course>> getAllCourses() async {
   });
 
   return result;
+}
+
+/// 获取真正的文件名
+Future<String> getFileName(Resource resource) async {
+  String regex = r'<p>文件名:<span>(.+?)</span>';
+  String content = await request.getContent('$resourceDownloadPreviewUrl?'
+      'fileid=${resource.fileId}&'
+      'resid=${resource.resId}&'
+      'lid=${resource.lId}');
+  if (content == null) {
+    return null;
+  }
+
+  Match match = matchOne(regex, content);
+  if (match == null) {
+    return null;
+  }
+
+  return match.group(1);
 }
 
 /// 用正则匹配字符串里的所有文件夹信息

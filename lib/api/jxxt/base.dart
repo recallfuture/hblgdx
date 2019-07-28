@@ -44,3 +44,12 @@ const String resourceListUrl = baseUrl + 'common/script/listview.jsp';
 /// lid
 /// folderid
 const String resourceDownloadUrl = baseUrl + 'common/script/download.jsp';
+
+/// 资源下载地址
+///
+/// 参数：
+/// fileid
+/// lid
+/// resid
+const String resourceDownloadPreviewUrl = baseUrl +
+    'common/script/preview/download_preview.jsp';

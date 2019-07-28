@@ -163,6 +163,7 @@ class _ResourcePageState extends State<ResourcePage> {
           title: Text(_resources[index].name),
           onTap: () {
             if (_resources[index].type == ResourceType.folder) {
+              // 是文件夹的话就递归打开本页面以显示文件夹中的内容
               Navigator.of(context).push(
                 new MaterialPageRoute(
                   builder: (context) =>
@@ -172,7 +173,10 @@ class _ResourcePageState extends State<ResourcePage> {
                       ),
                 ),
               );
-            } else {}
+            } else {
+              // 否则弹出下载提示框
+              _showDownloadDialog();
+            }
           },
         );
       }),
@@ -209,6 +213,10 @@ class _ResourcePageState extends State<ResourcePage> {
         ),
       ],
     );
+  }
+
+  _showDownloadDialog() {
+
   }
 
   _getData() async {
