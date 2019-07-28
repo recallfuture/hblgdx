@@ -82,6 +82,20 @@ class Request {
       data: params,
     );
   }
+
+  download(String url,
+      String savePath, {
+        ProgressCallback onReceiveProgress,
+        CancelToken cancelToken,
+      }) {
+    return _dio.download(
+      url,
+      savePath,
+      onReceiveProgress: onReceiveProgress,
+      cancelToken: cancelToken,
+      options: Options(receiveTimeout: 100000),
+    );
+  }
 }
 
 // 实例化方便使用

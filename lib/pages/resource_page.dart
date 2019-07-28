@@ -1,15 +1,23 @@
+import 'dart:io';
+
+import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hblgdx/api/jxxt/login.dart';
 import 'package:hblgdx/api/jxxt/resource.dart';
 import 'package:hblgdx/model/course.dart';
 import 'package:hblgdx/model/resource.dart';
 import 'package:hblgdx/utils/data_store.dart';
+import 'package:hblgdx/utils/request.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import 'download_manager_page.dart';
 
 class ResourcePage extends StatefulWidget {
-  final String courseId;
-  final String folderId;
+  final Course course;
+  final Resource resource;
 
-  ResourcePage({this.courseId = '0', this.folderId = '0'});
+  ResourcePage({this.course, this.resource});
 
   @override
   _ResourcePageState createState() => _ResourcePageState();
@@ -22,6 +30,8 @@ class _ResourcePageState extends State<ResourcePage> {
   bool _isLoading = false;
   String _loadingText = '';
   String _errorText = '';
+
+  String title = '确定下载此文件么';
 
   @override
   void initState() {
@@ -37,6 +47,10 @@ class _ResourcePageState extends State<ResourcePage> {
 
   @override
   Widget build(BuildContext context) {
+    return _buildScaffold();
+  }
+
+  Widget _buildScaffold() {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -46,6 +60,10 @@ class _ResourcePageState extends State<ResourcePage> {
         backgroundColor: Color.fromARGB(255, 53, 83, 108),
         actions: <Widget>[
           IconButton(
+            icon: Icon(Icons.file_download),
+            onPressed: _showDownloadManagerPage,
+          ),
+          IconButton(
             icon: Icon(Icons.refresh),
             onPressed: _onRefresh,
           ),
@@ -54,6 +72,21 @@ class _ResourcePageState extends State<ResourcePage> {
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 20),
         child: _buildFuture(),
+      ),
+    );
+  }
+
+  _showDownloadManagerPage() async {
+    Directory dir = await DownloadsPathProvider.downloadsDirectory;
+    dir = Directory('${dir.path}/课程资源');
+    bool exist = await dir.exists();
+    if (!exist) {
+      await dir.create(recursive: true);
+    }
+
+    Navigator.of(context).push(
+      new MaterialPageRoute(
+        builder: (context) => DownloadManagerPage(context, dir),
       ),
     );
   }
@@ -114,7 +147,7 @@ class _ResourcePageState extends State<ResourcePage> {
   }
 
   Widget _buildStateDone() {
-    if (this.widget.courseId == '0') {
+    if (this.widget.course == null) {
       return _buildCourseList();
     } else {
       return _buildResourceList();
@@ -137,7 +170,7 @@ class _ResourcePageState extends State<ResourcePage> {
               Navigator.of(context).push(
                 new MaterialPageRoute(
                   builder: (context) =>
-                      ResourcePage(courseId: _allCourses[index].id),
+                      ResourcePage(course: _allCourses[index]),
                 ),
               ),
         );
@@ -168,14 +201,14 @@ class _ResourcePageState extends State<ResourcePage> {
                 new MaterialPageRoute(
                   builder: (context) =>
                       ResourcePage(
-                        courseId: this.widget.courseId,
-                        folderId: _resources[index].folderId,
+                        course: this.widget.course,
+                        resource: _resources[index],
                       ),
                 ),
               );
             } else {
               // 否则弹出下载提示框
-              _showDownloadDialog();
+              _showDownloadDialog(_resources[index]);
             }
           },
         );
@@ -215,8 +248,82 @@ class _ResourcePageState extends State<ResourcePage> {
     );
   }
 
-  _showDownloadDialog() {
+  _showDownloadDialog(Resource resource) async {
+    String path;
 
+    try {
+      // 检查权限
+      var permissionHandler = PermissionHandler();
+      var permission = await permissionHandler
+          .checkPermissionStatus(PermissionGroup.storage);
+
+      // 获取文件访问权限
+      if (permission != PermissionStatus.granted) {
+        _showToast('请授权以访问本地文件');
+        await permissionHandler.requestPermissions([PermissionGroup.storage]);
+      }
+
+      // 获取真正的文件名并缓存
+      if (resource.realName == null) {
+        resource.realName = await getFileName(resource);
+      }
+      String fileName = resource.realName;
+
+      // 获取下载目录，不存在就创建
+      Directory dir = await DownloadsPathProvider.downloadsDirectory;
+      dir = Directory('${dir.path}/课程资源/${this.widget.course.name}');
+      path = '${dir.path}/$fileName';
+      path = path.replaceAll(' ', '');
+      bool exist = await dir.exists();
+      if (!exist) {
+        await dir.create(recursive: true);
+      }
+    } catch (e) {
+      print(e.toString());
+      _showToast('下载失败');
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('确定下载此文件么'),
+          content: Text('将下载到$path'),
+          actions: <Widget>[
+            MaterialButton(
+              child: Text('取消'),
+              onPressed: () => Navigator.pop(context),
+            ),
+            MaterialButton(
+              child: Text('确认'),
+              onPressed: () {
+                _download(resource, path);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _download(Resource resource, String path) {
+    try {
+      request.download(
+        resource.downloadUrl,
+        path,
+        onReceiveProgress: (count, total) {
+          int progress = (count / total * 100).floor();
+          _showToast('${resource.realName}：$progress%');
+          if (progress == 100) {
+            _showToast('${resource.realName}下载完成，请到下载管理查看');
+          }
+        },
+      );
+    } catch (e) {
+      print(e.toString());
+      _showToast('下载失败');
+    }
   }
 
   _getData() async {
@@ -237,7 +344,7 @@ class _ResourcePageState extends State<ResourcePage> {
       }
 
       // 获取数据
-      if (this.widget.courseId == '0') {
+      if (this.widget.course == null) {
         // 获取课程列表
         _setLoadingText('获取课程列表');
         _allCourses = await getAllCourses();
@@ -247,8 +354,10 @@ class _ResourcePageState extends State<ResourcePage> {
       } else {
         // 获取当前课程的资源目录
         _setLoadingText('获取资源目录');
-        _resources =
-        await getResourceList(this.widget.courseId, this.widget.folderId);
+        _resources = await getResourceList(
+          this.widget.course.id,
+          this.widget.resource?.folderId ?? '0',
+        );
         if (_resources == null) {
           throw Exception('课程资源获取失败');
         }
@@ -279,5 +388,15 @@ class _ResourcePageState extends State<ResourcePage> {
     setState(() {
       _errorText = text;
     });
+  }
+
+  _showToast(String msg) {
+    showToast(
+      msg,
+      duration: Duration(seconds: 2),
+      position: ToastPosition.top,
+      backgroundColor: Colors.white,
+      textStyle: TextStyle(color: Colors.black),
+    );
   }
 }

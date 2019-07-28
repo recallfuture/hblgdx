@@ -23,6 +23,9 @@ class Resource {
   /// 资源的名字
   String name;
 
+  /// 文件真正的名字
+  String realName;
+
   /// 资源的类型（文件或文件夹）
   ResourceType type;
 
