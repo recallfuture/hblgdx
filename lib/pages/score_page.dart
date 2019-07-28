@@ -46,26 +46,34 @@ class _ScorePageState extends State<ScorePage> {
               .image,
         ),
       ),
-      child: Scaffold(
+      child: _buildScaffold(),
+    );
+  }
+
+  Widget _buildScaffold() {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        title: Text('成绩查询'),
+        centerTitle: true,
+        elevation: 0,
         backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: Text('成绩查询'),
-          centerTitle: true,
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () => _future = _getScoreReport(),
-            ),
-          ],
-        ),
-        body: Container(
-          margin: EdgeInsets.symmetric(horizontal: 20),
-          child: _buildFuture(),
-        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: _onRefresh,
+          ),
+        ],
+      ),
+      body: Container(
+        margin: EdgeInsets.symmetric(horizontal: 20),
+        child: _buildFuture(),
       ),
     );
+  }
+
+  _onRefresh() {
+    _future = _getScoreReport();
   }
 
   Widget _buildFuture() {
@@ -74,40 +82,51 @@ class _ScorePageState extends State<ScorePage> {
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
-            return _buildSuccessReport();
+            return _buildStateNone();
           case ConnectionState.active:
+            return _buildStateActive();
           case ConnectionState.waiting:
-            return Center(
-              child: Card(
-                child: Container(
-                  padding: EdgeInsets.all(15),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      CircularProgressIndicator(
-                        valueColor:
-                        new AlwaysStoppedAnimation<Color>(Colors.green),
-                      ),
-                      Text(
-                        _loadingText,
-                        style: TextStyle(color: Colors.green),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
+            return _buildStateWaiting();
           case ConnectionState.done:
-            return _buildScoreReport();
+            return _buildStateDone();
         }
         return null;
       },
     );
   }
 
-  /// 渲染成绩查询
-  Widget _buildScoreReport() {
+  Widget _buildStateNone() {
+    return _buildSuccessReport();
+  }
+
+  Widget _buildStateActive() {
+    return null;
+  }
+
+  Widget _buildStateWaiting() {
+    return Center(
+      child: Card(
+        child: Container(
+          padding: EdgeInsets.all(15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CircularProgressIndicator(
+                valueColor: new AlwaysStoppedAnimation<Color>(Colors.green),
+              ),
+              Text(
+                _loadingText,
+                style: TextStyle(color: Colors.green),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStateDone() {
     // 出现错误
     if (_scoreReport == null) {
       return _buildErrorCard();
