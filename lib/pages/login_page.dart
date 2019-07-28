@@ -230,9 +230,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _onPressed() {
+  _onPressed() async {
     try {
-      _submit();
+      await _submit();
     } catch (e) {
       _stopWait();
       _showToast('登录失败(${e.toString()})');
