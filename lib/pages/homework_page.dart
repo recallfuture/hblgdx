@@ -102,6 +102,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
   Widget _buildStateWaiting() {
     return Center(
       child: Card(
+        elevation: 5,
         child: Container(
           padding: EdgeInsets.all(15),
           child: Column(

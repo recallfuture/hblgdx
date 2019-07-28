@@ -106,6 +106,7 @@ class _ScorePageState extends State<ScorePage> {
   Widget _buildStateWaiting() {
     return Center(
       child: Card(
+        elevation: 5,
         child: Container(
           padding: EdgeInsets.all(15),
           child: Column(
