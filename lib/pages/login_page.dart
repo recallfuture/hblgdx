@@ -245,14 +245,13 @@ class _LoginPageState extends State<LoginPage> {
     if (this._waiting) {
       return;
     }
+    _startWait();
 
     // 检验表单数据
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
-
-    _startWait();
 
     int code;
 
@@ -272,8 +271,6 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    _stopWait();
-    _showToast('登录成功');
 
     // 存储下来
     await DataStore.setIsSignedIn(true);
@@ -282,6 +279,9 @@ class _LoginPageState extends State<LoginPage> {
     await DataStore.setJwxtPassword(_jwPassword);
     DataStore.isSignedInJxxt = true;
     DataStore.isSignedInMyncmc = true;
+
+    _stopWait();
+    _showToast('登录成功');
 
     // 回到主页并不允许返回
     Navigator.of(context).pushNamedAndRemoveUntil(

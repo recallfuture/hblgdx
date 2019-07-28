@@ -143,6 +143,9 @@ class _HomePageState extends State<HomePage> {
               onPressed: () async {
                 await DataStore.setIsSignedIn(false);
                 await DataStore.setScoreReport(null);
+                DataStore.isSignedInJxxt = false;
+                DataStore.isSignedInJwxt = false;
+                DataStore.isSignedInMyncmc = false;
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil('/', (route) => route == null);
               },
