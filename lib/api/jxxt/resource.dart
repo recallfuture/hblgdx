@@ -72,11 +72,11 @@ List<Resource> _getFiles(String content) {
 
 /// 获取资源列表
 Future<List<Resource>> getResourceList(String courseId,
-    [String foldId = '0']) async {
+    [String folderId = '0']) async {
   // 需要先访问这个课程地址才能通过下面的固定地址得到正确的资源信息
   await request.get('$courseUrl?courseId=$courseId');
   String content = await request
-      .getContent('$resourceListUrl?lid=$courseId&folderid=$foldId');
+      .getContent('$resourceListUrl?lid=$courseId&folderid=$folderId');
   if (content == null) {
     return null;
   }

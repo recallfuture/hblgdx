@@ -63,6 +63,7 @@ flutter:
     - assets/bg_homework.jpg
     - assets/bg_score.jpg
     - assets/label.png
+    - assets/file.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
