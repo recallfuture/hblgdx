@@ -47,7 +47,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
         appBar: AppBar(
           title: Text('作业查询'),
           centerTitle: true,
-//          elevation: 0,
+          elevation: 0,
           backgroundColor: Colors.transparent,
           actions: <Widget>[
             IconButton(
@@ -105,28 +105,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
   Widget _buildHomeworkList() {
     // 出现错误
     if (_homeworkList == null) {
-      return Card(
-        color: Colors.red,
-        child: SizedBox(
-          height: 120,
-          child: ListView(
-            children: <Widget>[
-              Text(
-                '出错啦!',
-                style: TextStyle(
-                  fontSize: 25,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                '错误原因：$_errorText',
-                style: TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
-        ),
-      );
+      return _buildErrorCard();
     }
 
     // 无待交作业
@@ -163,6 +142,38 @@ class _HomeworkPageState extends State<HomeworkPage> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildErrorCard() {
+    // 套上ListView防止高度出界
+    return ListView(
+      children: <Widget>[
+        Card(
+          color: Colors.red,
+          child: Container(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  '出错啦!',
+                  style: TextStyle(
+                    fontSize: 25,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '错误原因：$_errorText',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 

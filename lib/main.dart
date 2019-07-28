@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hblgdx/utils/data_store.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -8,6 +11,13 @@ import 'pages/login_page.dart';
 void main() async {
   await DataStore.init();
   runApp(MyApp());
+
+  // 状态栏透明
+  if (Platform.isAndroid) {
+    SystemUiOverlayStyle systemUiOverlayStyle =
+    SystemUiOverlayStyle(statusBarColor: Colors.transparent);
+    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+  }
 }
 
 class MyApp extends StatelessWidget {

@@ -51,7 +51,7 @@ class _ScorePageState extends State<ScorePage> {
         appBar: AppBar(
           title: Text('成绩查询'),
           centerTitle: true,
-//          elevation: 0,
+          elevation: 0,
           backgroundColor: Colors.transparent,
           actions: <Widget>[
             IconButton(
@@ -154,7 +154,9 @@ class _ScorePageState extends State<ScorePage> {
   }
 
   Widget _buildSuccessReport() {
-    List<Score> scores = _scoreReport.scores;
+    // 升序排列
+    List<Score> scores = _scoreReport.scores
+      ..sort((a, b) => (a.score - b.score).floor());
 
     // 正常渲染
     return ListView(
