@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Color> _bottomBarColor = [
     Color.fromARGB(255, 44, 44, 61),
-    Color.fromARGB(255, 44, 44, 61),
+    Color.fromARGB(255, 61, 61, 111),
     Color.fromARGB(255, 53, 83, 108),
     Color.fromARGB(255, 38, 124, 160),
   ];

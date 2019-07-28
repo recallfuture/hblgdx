@@ -20,7 +20,8 @@ class _CourseTablePageState extends State<CourseTablePage> {
   Widget buildAppBar() {
     return AppBar(
       centerTitle: true,
-      title: Text('第一学期'),
+      title: Text('敬请期待'),
+      backgroundColor: Color.fromARGB(255, 61, 61, 111),
     );
   }
 
