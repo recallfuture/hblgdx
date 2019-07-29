@@ -6,6 +6,7 @@ import 'package:hblgdx/utils/data_store.dart';
 import 'package:oktoast/oktoast.dart';
 
 import 'pages/faq_page.dart';
+import 'pages/feedback_page.dart';
 import 'pages/home_page.dart';
 import 'pages/login_page.dart';
 
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
           '/': (context) => DataStore.isSignedIn ? HomePage() : LoginPage(),
           '/login': (context) => LoginPage(),
           '/faq': (context) => FAQPage(),
+          '/feedback': (context) => FeedBackPage(),
         },
       ),
     );

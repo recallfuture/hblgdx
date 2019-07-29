@@ -114,6 +114,7 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             leading: Icon(Icons.question_answer),
             title: Text('问题反馈'),
+            onTap: () => Navigator.of(context).pushNamed('/feedback'),
           ),
           ListTile(
             leading: Icon(Icons.info),
