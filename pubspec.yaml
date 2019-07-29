@@ -61,13 +61,13 @@ flutter:
     - assets/resource.png
     - assets/score.png
     - assets/logo.png
-    - assets/drawer_image.png
     - assets/colors.png
     - assets/bg_homework.jpg
     - assets/bg_score.jpg
     - assets/label.png
     - assets/file.png
     - assets/opener.png
+    - assets/bg_drawer_header.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -119,10 +119,8 @@ class _HomePageState extends State<HomePage> {
         image: DecorationImage(
           fit: BoxFit.cover,
           image: Image
-              .asset('assets/drawer_image.png')
+              .asset('assets/bg_drawer_header.jpg')
               .image,
-          colorFilter: ColorFilter.mode(
-              Colors.blue[50].withAlpha(200), BlendMode.lighten),
         ),
       ),
       child: _buildAccount(
@@ -134,18 +132,22 @@ class _HomePageState extends State<HomePage> {
   /// 帐号
   Widget _buildAccount(String account) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text('欢迎', style: TextStyle(fontSize: 30)),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(account),
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Text(account),
+            ),
             FlatButton(
+              color: Colors.red,
               child: Text(
                 '注销',
                 style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
               onPressed: _showLogOutDialog,
