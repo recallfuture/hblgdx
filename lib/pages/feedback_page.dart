@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 class FeedBackPage extends StatelessWidget {
   final String _githubIssuesUrl =
       'https://github.com/recallfuture/hblgdx/issues';
-  final String _mailUrl = 'mailto:1498881550@qq.com?subject=问题反馈';
+  final String _mailUrl = 'mailto:recallsufuture@gmail.com?subject=问题反馈';
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +79,7 @@ class FeedBackPage extends StatelessWidget {
               style: TextStyle(fontSize: 24),
             ),
             Text(
-              '邮箱地址：1498881550@qq.com',
+              '邮箱地址：recallsufuture@gmail.com',
               textAlign: TextAlign.center,
             ),
             Text(
