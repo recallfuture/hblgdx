@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.horizontal(
                       right: Radius.circular(5)),
                 ),
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.symmetric(horizontal: 2, vertical: 5),
                 child: Icon(
                   Icons.menu,
                   color: Colors.white,
@@ -107,12 +107,13 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           _buildDrawerHeader(),
           ListTile(
-            leading: Icon(Icons.folder),
-            title: Text('我的文件'),
+            leading: Icon(Icons.help),
+            title: Text('常见问题'),
+            onTap: () => Navigator.of(context).pushNamed('/faq'),
           ),
           ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('下载设置'),
+            leading: Icon(Icons.question_answer),
+            title: Text('问题反馈'),
           ),
           ListTile(
             leading: Icon(Icons.info),
