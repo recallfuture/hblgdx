@@ -107,7 +107,7 @@ class _BlockTableState extends State<BlockTable> {
               height: blockHeight,
               backgroundColor: Color.fromARGB(255, 250, 107, 91),
               textColor: Colors.white,
-              onTap: () => onTap(course),
+//              onTap: () => onTap(course),
             ),
           );
           i += jie;
@@ -157,11 +157,6 @@ class _BlockTableState extends State<BlockTable> {
             ListTile(
               leading: Text("课程名："),
               title: Text(course.name),
-              onTap: () {
-                setState(() {
-                  course.name = '123';
-                });
-              },
             ),
             ListTile(
               leading: Text("时间："),
