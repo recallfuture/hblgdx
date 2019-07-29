@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FeedBackPage extends StatelessWidget {
+  final String _githubIssuesUrl =
+      'https://github.com/recallfuture/hblgdx/issues';
+  final String _mailUrl = 'mailto:1498881550@qq.com?subject=问题反馈';
+
   @override
   Widget build(BuildContext context) {
     return _buildScaffold();
@@ -26,14 +30,14 @@ class FeedBackPage extends StatelessWidget {
   Widget _buildFeedback() {
     return ListView(
       children: <Widget>[
-        _buildRecommend(),
         _buildEmail(),
+        _buildGithub(),
         _buildTip(),
       ],
     );
   }
 
-  Widget _buildRecommend() {
+  Widget _buildGithub() {
     return Card(
       child: Container(
         padding: EdgeInsets.all(15),
@@ -41,9 +45,9 @@ class FeedBackPage extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(
-              '在Github上提交Issue（推荐）',
+              '在Github上提交Issue',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.orange, fontSize: 26),
+              style: TextStyle(fontSize: 24),
             ),
             Text(
               '在本项目的Issues中提出问题或是希望添加的新功能，如果能顺便给个star那就更好了',
@@ -53,9 +57,7 @@ class FeedBackPage extends StatelessWidget {
               child: Text('去反馈'),
               color: Colors.orange,
               textColor: Colors.white,
-              onPressed: () {
-                launch('https://github.com/recallfuture/hblgdx/issues');
-              },
+              onPressed: () => launch(_githubIssuesUrl),
             ),
           ],
         ),
@@ -74,7 +76,7 @@ class FeedBackPage extends StatelessWidget {
             Text(
               '向我发送反馈邮件',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 26),
+              style: TextStyle(fontSize: 24),
             ),
             Text(
               '邮箱地址：1498881550@qq.com',
@@ -88,9 +90,7 @@ class FeedBackPage extends StatelessWidget {
               child: Text('去反馈'),
               color: Colors.orange,
               textColor: Colors.white,
-              onPressed: () {
-                launch('mailto:1498881550@qq.com?subject=问题反馈');
-              },
+              onPressed: () => launch(_mailUrl),
             ),
           ],
         ),
