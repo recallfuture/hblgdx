@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:hblgdx/utils/data_store.dart';
 import 'package:oktoast/oktoast.dart';
 
+import 'pages/about_page.dart';
 import 'pages/faq_page.dart';
 import 'pages/feedback_page.dart';
 import 'pages/home_page.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginPage(),
           '/faq': (context) => FAQPage(),
           '/feedback': (context) => FeedBackPage(),
+          '/about': (context) => AboutPage(),
         },
       ),
     );

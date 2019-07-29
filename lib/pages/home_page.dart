@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
             // IconButton有最小宽度限制，在这里不合适，换成GestureDetector
             child: GestureDetector(
               onTap: () => Scaffold.of(context).openDrawer(),
-              child: Image.asset('assets/opener.png', scale: 2,),
+              child: Image.asset('assets/opener.png', scale: 1.5,),
             ),
           ),
     );
@@ -106,7 +106,8 @@ class _HomePageState extends State<HomePage> {
           ),
           ListTile(
             leading: Icon(Icons.info),
-            title: Text('关于我们'),
+            title: Text('关于'),
+            onTap: () => Navigator.of(context).pushNamed('/about'),
           ),
         ],
       ),
