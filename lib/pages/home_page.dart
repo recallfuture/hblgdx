@@ -145,6 +145,7 @@ class _HomePageState extends State<HomePage> {
             ),
             FlatButton(
               color: Colors.red,
+              shape: BeveledRectangleBorder(),
               child: Text(
                 '注销',
                 style: TextStyle(
