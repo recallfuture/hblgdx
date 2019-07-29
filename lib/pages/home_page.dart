@@ -81,19 +81,7 @@ class _HomePageState extends State<HomePage> {
             // IconButton有最小宽度限制，在这里不合适，换成GestureDetector
             child: GestureDetector(
               onTap: () => Scaffold.of(context).openDrawer(),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.purple,
-                  borderRadius: BorderRadius.horizontal(
-                      right: Radius.circular(5)),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 2, vertical: 5),
-                child: Icon(
-                  Icons.menu,
-                  color: Colors.white,
-                  size: 30,
-                ),
-              ),
+              child: Image.asset('assets/opener.png', scale: 2,),
             ),
           ),
     );
