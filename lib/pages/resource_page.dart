@@ -69,10 +69,7 @@ class _ResourcePageState extends State<ResourcePage> {
           ),
         ],
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
-        child: _buildFuture(),
-      ),
+      body: _buildFuture(),
     );
   }
 

@@ -42,10 +42,7 @@ class _BasePageState extends State<BasePage> {
           ),
         ],
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
-        child: _buildFuture(),
-      ),
+      body: _buildFuture(),
     );
   }
 
@@ -108,6 +105,7 @@ class _BasePageState extends State<BasePage> {
   Widget _buildErrorCard() {
     // 套上ListView防止高度出界
     return ListView(
+      padding: EdgeInsets.symmetric(horizontal: 20),
       children: <Widget>[
         Card(
           color: Colors.red,

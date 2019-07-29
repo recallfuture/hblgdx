@@ -61,10 +61,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
           ),
         ],
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
-        child: _buildFuture(),
-      ),
+      body: _buildFuture(),
     );
   }
 
@@ -131,17 +128,20 @@ class _HomeworkPageState extends State<HomeworkPage> {
 
     // 无待交作业
     if (_homeworkList.length == 0) {
-      return Card(
-        color: Colors.green,
-        child: SizedBox(
-          height: 120,
-          child: Center(
-            child: Text(
-              '无待交作业，安心休息吧',
-              style: TextStyle(
-                fontSize: 25,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 20),
+        child: Card(
+          color: Colors.green,
+          child: SizedBox(
+            height: 120,
+            child: Center(
+              child: Text(
+                '无待交作业，安心休息吧',
+                style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -151,6 +151,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
 
     // 有作业
     return ListView(
+      padding: EdgeInsets.symmetric(horizontal: 20),
       children: List<Widget>.generate(
         _homeworkList.length,
             (index) {
@@ -169,6 +170,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
   Widget _buildErrorCard() {
     // 套上ListView防止高度出界
     return ListView(
+      padding: EdgeInsets.symmetric(horizontal: 20),
       children: <Widget>[
         Card(
           color: Colors.red,

@@ -40,18 +40,16 @@ class FAQPage extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.red,
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
-        child: _buildFAQList(),
-      ),
+      body: _buildFAQList(),
     );
   }
 
   Widget _buildFAQList() {
     return ListView(
+      padding: EdgeInsets.symmetric(horizontal: 20),
       children: List.generate(
         _faqList.length,
-        (index) => _buildFAQItem(_faqList[index]),
+            (index) => _buildFAQItem(_faqList[index]),
       ),
     );
   }

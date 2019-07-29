@@ -20,15 +20,13 @@ class FeedBackPage extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.orange,
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
-        child: _buildFeedback(),
-      ),
+      body: _buildFeedback(),
     );
   }
 
   Widget _buildFeedback() {
     return ListView(
+      padding: EdgeInsets.symmetric(horizontal: 20),
       children: <Widget>[
         _buildEmail(),
         _buildGithub(),

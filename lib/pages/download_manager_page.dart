@@ -23,10 +23,7 @@ class DownloadManagerPage extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.blue,
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
-        child: _buildFileList(),
-      ),
+      body: _buildFileList(),
     );
   }
 
@@ -34,6 +31,7 @@ class DownloadManagerPage extends StatelessWidget {
     List<FileSystemEntity> fileList = dir.listSync();
 
     return ListView(
+      padding: EdgeInsets.symmetric(horizontal: 20),
       children: List<Widget>.generate(fileList.length, (index) {
         var file = fileList[index];
         var stat = file.statSync();

@@ -65,10 +65,7 @@ class _ScorePageState extends State<ScorePage> {
           ),
         ],
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
-        child: _buildFuture(),
-      ),
+      body: _buildFuture(),
     );
   }
 
@@ -139,6 +136,7 @@ class _ScorePageState extends State<ScorePage> {
   Widget _buildErrorCard() {
     // 套上ListView防止高度出界
     return ListView(
+      padding: EdgeInsets.symmetric(horizontal: 20),
       children: <Widget>[
         Card(
           color: Colors.red,
@@ -180,6 +178,7 @@ class _ScorePageState extends State<ScorePage> {
 
     // 正常渲染
     return ListView(
+      padding: EdgeInsets.symmetric(horizontal: 20),
       children: <Widget>[
         Card(
           child: Container(
