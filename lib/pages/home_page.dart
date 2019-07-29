@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:hblgdx/api/github/update.dart';
 import 'package:hblgdx/api/jwxt/login.dart' deferred as jwxt;
 import 'package:hblgdx/api/jxxt/login.dart' deferred as jxxt;
+import 'package:hblgdx/model/version.dart';
 import 'package:hblgdx/pages/course_table_page.dart';
 import 'package:hblgdx/pages/homework_page.dart';
 import 'package:hblgdx/pages/resource_page.dart';
 import 'package:hblgdx/pages/score_page.dart';
 import 'package:hblgdx/utils/data_store.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,6 +17,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+  final String latestReleaseUrl =
+      'https://github.com/recallfuture/hblgdx/releases/latest';
 
   // 懒加载工厂
   List _pageFactory = [
@@ -45,6 +50,59 @@ class _HomePageState extends State<HomePage> {
     if (_pages[_currentIndex] is Scaffold) {
       _pages[_currentIndex] = _pageFactory[_currentIndex]();
     }
+
+    _getLatestVersion();
+  }
+
+  /// 获取最新的版本号
+  _getLatestVersion() async {
+    // 没忽略本次更新才去获取新版本
+    if (!DataStore.ignoreUpdate) {
+      try {
+        Version version = await getLatestVersion();
+        // 只要版本号不同就提示更新
+        if (version.versionName != DataStore.version) {
+          _showUpdateDialog(version);
+        }
+      }
+      catch (e) {
+        // 更新错误也没关系，不需要提醒
+        print(e.toString());
+      }
+    }
+  }
+
+  _showUpdateDialog(Version version) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text('检测到新版本${version.versionName}'),
+          content: Text('新版变化：\n${version.changelog}\n是否前去下载新版本？'),
+          actions: <Widget>[
+            MaterialButton(
+              child: Text('不再提示'),
+              onPressed: () {
+                DataStore.setIgnoreUpdate(true);
+                Navigator.pop(context);
+              },
+            ),
+            MaterialButton(
+              child: Text('取消'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            MaterialButton(
+              child: Text('确定'),
+              onPressed: () {
+                launch(latestReleaseUrl);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -81,7 +139,10 @@ class _HomePageState extends State<HomePage> {
             // IconButton有最小宽度限制，在这里不合适，换成GestureDetector
             child: GestureDetector(
               onTap: () => Scaffold.of(context).openDrawer(),
-              child: Image.asset('assets/opener.png', scale: 1.5,),
+              child: Image.asset(
+                'assets/opener.png',
+                scale: 1.5,
+              ),
             ),
           ),
     );

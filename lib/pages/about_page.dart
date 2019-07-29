@@ -34,7 +34,7 @@ class AboutPage extends StatelessWidget {
       () => launch('https://github.com/recallfuture/hblgdx/releases/latest'),
     ),
     AboutItem('开源协议', 'MIT'),
-    AboutItem('版本号', DataStore.projectVersion),
+    AboutItem('版本号', DataStore.version),
     AboutItem('检查更新', null, () {}),
   ];
 

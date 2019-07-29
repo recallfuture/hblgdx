@@ -20,20 +20,19 @@ class DataStore {
   // 是否登录了煤医查询系统
   static bool isSignedInMyncmc = false;
 
-  static String projectVersion;
+  // 当前的版本号全名
+  static String version;
 
-  static String projectCode;
+  // 是否忽略本次更新
+  static bool _ignoreUpdate = false;
 
   static init() async {
     _sp = await SharedPreferences.getInstance();
-    projectVersion = await GetVersion.projectVersion;
-    projectCode = await GetVersion.projectCode;
+    version = await GetVersion.projectVersion;
   }
 
   static bool get isFirstTime {
-    return _sp.getBool('isFirstTime') == null
-        ? _isFirstTime
-        : _sp.getBool('isFirstTime');
+    return _sp.getBool('isFirstTime') ?? _isFirstTime;
   }
 
   static setIsFirstTime(bool value) async {
@@ -66,9 +65,7 @@ class DataStore {
   }
 
   static bool get isSignedIn {
-    return _sp.getBool('isSignedIn') == null
-        ? _isSignedIn
-        : _sp.getBool('isSignedIn');
+    return _sp.getBool('isSignedIn') ?? _isSignedIn;
   }
 
   static setIsSignedIn(bool value) async {
@@ -82,5 +79,14 @@ class DataStore {
 
   static setScoreReport(value) async {
     await _sp.setString('scoreReport', value);
+  }
+
+  // 是否忽略本次版本更新
+  static bool get ignoreUpdate {
+    return _sp.getBool('ignoreUpdate') ?? _ignoreUpdate;
+  }
+
+  static setIgnoreUpdate(value) async {
+    await _sp.setBool('ignoreUpdate', value);
   }
 }
