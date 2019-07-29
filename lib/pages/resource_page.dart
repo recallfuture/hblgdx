@@ -77,18 +77,18 @@ class _ResourcePageState extends State<ResourcePage> {
   }
 
   _showDownloadManagerPage() async {
-    Directory dir = await DownloadsPathProvider.downloadsDirectory;
-    dir = Directory('${dir.path}/课程资源');
-    bool exist = await dir.exists();
-    if (!exist) {
-      await dir.create(recursive: true);
+    try {
+      await _checkAndRequestPermission();
+      Directory dir = await _getDownloadDir();
+      Navigator.of(context).push(
+        new MaterialPageRoute(
+          builder: (context) => DownloadManagerPage(context, dir),
+        ),
+      );
+    } catch (e) {
+      print(e.toString());
+      _showToast('无权访问本地文件');
     }
-
-    Navigator.of(context).push(
-      new MaterialPageRoute(
-        builder: (context) => DownloadManagerPage(context, dir),
-      ),
-    );
   }
 
   _onRefresh() {
@@ -248,20 +248,40 @@ class _ResourcePageState extends State<ResourcePage> {
     );
   }
 
+  _checkAndRequestPermission() async {
+    var permissionHandler = PermissionHandler();
+    var permission = await permissionHandler
+        .checkPermissionStatus(PermissionGroup.storage);
+
+    // 获取文件访问权限
+    if (permission != PermissionStatus.granted) {
+      _showToast('请授权以访问本地文件');
+      await permissionHandler.requestPermissions([PermissionGroup.storage]);
+    }
+  }
+
+  Future<Directory> _getDownloadDir() async {
+    Directory dir = await DownloadsPathProvider.downloadsDirectory;
+    if (this.widget.course != null) {
+      dir = Directory('${dir.path}/课程资源/${this.widget.course.name}');
+    } else {
+      dir = Directory('${dir.path}/课程资源/');
+    }
+
+    bool exist = await dir.exists();
+    if (!exist) {
+      await dir.create(recursive: true);
+    }
+
+    return dir;
+  }
+
   _showDownloadDialog(Resource resource) async {
     String path;
 
     try {
       // 检查权限
-      var permissionHandler = PermissionHandler();
-      var permission = await permissionHandler
-          .checkPermissionStatus(PermissionGroup.storage);
-
-      // 获取文件访问权限
-      if (permission != PermissionStatus.granted) {
-        _showToast('请授权以访问本地文件');
-        await permissionHandler.requestPermissions([PermissionGroup.storage]);
-      }
+      await _checkAndRequestPermission();
 
       // 获取真正的文件名并缓存
       if (resource.realName == null) {
@@ -270,14 +290,9 @@ class _ResourcePageState extends State<ResourcePage> {
       String fileName = resource.realName;
 
       // 获取下载目录，不存在就创建
-      Directory dir = await DownloadsPathProvider.downloadsDirectory;
-      dir = Directory('${dir.path}/课程资源/${this.widget.course.name}');
+      Directory dir = await _getDownloadDir();
       path = '${dir.path}/$fileName';
       path = path.replaceAll(' ', '');
-      bool exist = await dir.exists();
-      if (!exist) {
-        await dir.create(recursive: true);
-      }
     } catch (e) {
       print(e.toString());
       _showToast('下载失败');

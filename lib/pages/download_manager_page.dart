@@ -18,10 +18,10 @@ class DownloadManagerPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('下载管理'),
+        title: Text('已下载文件'),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Color.fromARGB(255, 53, 83, 108),
+        backgroundColor: Colors.blue,
       ),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 20),
