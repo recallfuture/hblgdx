@@ -77,7 +77,11 @@ class FeedBackPage extends StatelessWidget {
               style: TextStyle(fontSize: 26),
             ),
             Text(
-              '我的邮箱地址是1498881550@qq.com，也可以直接点击下面的按钮开始编写右键',
+              '邮箱地址：1498881550@qq.com',
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              '也可以直接点击下面的按钮开始编写邮件',
               textAlign: TextAlign.center,
             ),
             MaterialButton(
