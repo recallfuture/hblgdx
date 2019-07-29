@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hblgdx/utils/data_store.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutItem {
@@ -33,7 +34,7 @@ class AboutPage extends StatelessWidget {
       () => launch('https://github.com/recallfuture/hblgdx/releases/latest'),
     ),
     AboutItem('开源协议', 'MIT'),
-    AboutItem('版本号', '1.0-alpha'),
+    AboutItem('版本号', DataStore.projectVersion),
     AboutItem('检查更新', null, () {}),
   ];
 

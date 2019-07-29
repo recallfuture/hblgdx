@@ -1,3 +1,4 @@
+import 'package:get_version/get_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// 简单粗暴的单例全局数据管理
@@ -19,8 +20,14 @@ class DataStore {
   // 是否登录了煤医查询系统
   static bool isSignedInMyncmc = false;
 
+  static String projectVersion;
+
+  static String projectCode;
+
   static init() async {
     _sp = await SharedPreferences.getInstance();
+    projectVersion = await GetVersion.projectVersion;
+    projectCode = await GetVersion.projectCode;
   }
 
   static bool get isFirstTime {
