@@ -48,9 +48,11 @@ class MyApp extends StatelessWidget {
   }
 
   Widget getRootPage() {
-    if (DataStore.isFirstTime) {
-      return WelcomePage();
-    } else if (DataStore.isSignedIn) {
+//    // 取消引导页
+//    if (DataStore.isFirstTime) {
+//      return WelcomePage();
+//    }
+    if (DataStore.isSignedIn) {
       return HomePage();
     } else {
       return LoginPage();
