@@ -174,7 +174,7 @@ class _ScorePageState extends State<ScorePage> {
   Widget _buildSuccessReport() {
     // 升序排列
     List<Score> scores = _scoreReport.scores
-      ..sort((a, b) => (a.score - b.score).floor());
+      ..sort((a, b) => (b.score - a.score).floor());
 
     // 正常渲染
     return ListView(
