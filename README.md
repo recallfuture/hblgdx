@@ -17,7 +17,7 @@
 
 ## 最新版下载
 
-[下载地址](/recallfuture/hblgdx/releases/latest)
+[下载地址](../../releases/latest)
 
 ## 感谢
 
