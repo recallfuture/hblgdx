@@ -10,6 +10,7 @@ import 'pages/faq_page.dart';
 import 'pages/feedback_page.dart';
 import 'pages/home_page.dart';
 import 'pages/login_page.dart';
+import 'pages/welcome_page.dart';
 
 void main() async {
   await DataStore.init();
@@ -24,9 +25,17 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    var rootPage;
+    if (DataStore.isFirstTime) {
+      rootPage = WelcomePage();
+    } else if (DataStore.isSignedIn) {
+      rootPage = HomePage();
+    } else {
+      rootPage = LoginPage();
+    }
+
     return OKToast(
       child: MaterialApp(
         title: '校园查',
@@ -36,11 +45,12 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => DataStore.isSignedIn ? HomePage() : LoginPage(),
+          '/': (context) => rootPage,
           '/login': (context) => LoginPage(),
           '/faq': (context) => FAQPage(),
           '/feedback': (context) => FeedBackPage(),
           '/about': (context) => AboutPage(context),
+          '/welcome': (context) => WelcomePage(),
         },
       ),
     );
