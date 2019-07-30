@@ -194,9 +194,6 @@ class _ScorePageState extends State<ScorePage> {
             ),
           ),
         ),
-        SizedBox(
-          height: 20,
-        ),
         Card(
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 15),
