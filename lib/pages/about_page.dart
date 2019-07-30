@@ -38,7 +38,8 @@ class AboutPage extends StatelessWidget {
     AboutItem(
       '最新版本',
       'https://github.com/recallfuture/hblgdx/releases/latest',
-          () => launch('https://github.com/recallfuture/hblgdx/releases/latest'),
+          () =>
+          launch('https://github.com/recallfuture/hblgdx/releases/latest'),
     ),
     AboutItem('开源协议', 'MIT'),
     AboutItem('版本号', DataStore.version),
@@ -69,7 +70,8 @@ class AboutPage extends StatelessWidget {
 
   Widget _buildAboutList() {
     Iterable<Widget> tiles = _aboutItems.map(
-          (item) => ListTile(
+          (item) =>
+          ListTile(
         title: Text(item.title),
         subtitle: item.content == null ? null : Text(item.content),
         onTap: item.onTap,
@@ -87,11 +89,14 @@ class AboutPage extends StatelessWidget {
   /// 获取最新的版本号
   _getLatestVersion() async {
     try {
+      _showToast('开始检查更新');
       DataStore.setIgnoreUpdate(false);
       Version version = await getLatestVersion();
       // 只要版本号不同就提示更新
       if (version.versionName != DataStore.version) {
         _showUpdateDialog(version);
+      } else {
+        _showToast('已经是最新版');
       }
     } catch (e) {
       print(e.toString());
@@ -105,17 +110,20 @@ class AboutPage extends StatelessWidget {
       builder: (ctx) {
         return AlertDialog(
           title: Text('检测到新版本${version.versionName}'),
-          content: Text('新版变化：\n${version.changelog}\n是否前去下载新版本？'),
+          content: Text('新版变化：\n${version.changelog}\n\n是否前去下载新版本？'),
           actions: <Widget>[
             MaterialButton(
-              child: Text('取消'),
+              child: Text('稍后'),
               onPressed: () {
+                _showToast('将会在下次打开时再次提醒');
                 Navigator.pop(_context);
               },
             ),
             MaterialButton(
               child: Text('确定'),
               onPressed: () {
+                _showToast('正在跳转到下载地址');
+                Navigator.pop(_context);
                 launch(latestReleaseUrl);
               },
             ),

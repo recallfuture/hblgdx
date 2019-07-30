@@ -8,6 +8,7 @@ import 'package:hblgdx/pages/homework_page.dart';
 import 'package:hblgdx/pages/resource_page.dart';
 import 'package:hblgdx/pages/score_page.dart';
 import 'package:hblgdx/utils/data_store.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
@@ -78,24 +79,28 @@ class _HomePageState extends State<HomePage> {
       builder: (ctx) {
         return AlertDialog(
           title: Text('检测到新版本${version.versionName}'),
-          content: Text('新版变化：\n${version.changelog}\n是否前去下载新版本？'),
+          content: Text('新版变化：\n${version.changelog}\n\n是否前去下载新版本？'),
           actions: <Widget>[
             MaterialButton(
               child: Text('不再提示'),
               onPressed: () {
+                _showToast('如果需要更新，请到关于页面手动检查更新');
                 DataStore.setIgnoreUpdate(true);
                 Navigator.pop(context);
               },
             ),
             MaterialButton(
-              child: Text('取消'),
+              child: Text('稍后'),
               onPressed: () {
+                _showToast('将会在下次打开时再次提醒');
                 Navigator.pop(context);
               },
             ),
             MaterialButton(
               child: Text('确定'),
               onPressed: () {
+                _showToast('正在跳转到下载地址');
+                Navigator.pop(context);
                 launch(latestReleaseUrl);
               },
             ),
@@ -287,6 +292,16 @@ class _HomePageState extends State<HomePage> {
           }
         });
       },
+    );
+  }
+
+  _showToast(String msg) {
+    showToast(
+      msg,
+      duration: Duration(seconds: 2),
+      position: ToastPosition.top,
+      backgroundColor: Colors.white,
+      textStyle: TextStyle(color: Colors.black),
     );
   }
 }
