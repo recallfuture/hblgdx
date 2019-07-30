@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:hblgdx/api/jxxt/homework.dart';
 import 'package:hblgdx/api/jxxt/login.dart';
+import 'package:hblgdx/api/jxxt/resource.dart';
 import 'package:hblgdx/components/homework_item.dart';
 import 'package:hblgdx/model/homework.dart';
 import 'package:hblgdx/utils/data_store.dart';
@@ -126,44 +127,50 @@ class _HomeworkPageState extends State<HomeworkPage> {
       return _buildErrorCard();
     }
 
-    // 无待交作业
-    if (_homeworkList.length == 0) {
-      return Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
-        child: Card(
-          color: Colors.green,
-          child: SizedBox(
-            height: 120,
-            child: Center(
-              child: Text(
-                '无待交作业，安心休息吧',
-                style: TextStyle(
-                  fontSize: 25,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
+    // 未完成的作业和已完成的作业
+    List<Homework> finished =
+    _homeworkList.where((homework) => homework.resultUrl != null).toList();
+    List<Homework> unfinished =
+    _homeworkList.where((homework) => homework.resultUrl == null).toList();
 
-    // 有作业
+    // 分别生成所有子组件
+    List<HomeworkItem> finishedItems = _generateItem(finished, true);
+    List<HomeworkItem> unfinishedItems = _generateItem(unfinished, false);
+
+    // 构建待交作业数提示卡片
+    Widget tip = Card(
+      child: Container(
+        padding: EdgeInsets.all(15),
+        child: Text('待交作业数：${unfinished.length}'),
+      ),
+    );
+
+    // 生成组件列表
+    List<Widget> childrenList = []
+      ..add(tip)
+      ..addAll(unfinishedItems)..addAll(finishedItems);
+
+    // 放进列表里显示出来
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: 20),
-      children: List<Widget>.generate(
-        _homeworkList.length,
-            (index) {
-          Homework homework = _homeworkList[index];
-          return HomeworkItem(
-            homework.course.name,
-            homework.title,
-            homework.dateTime,
-            onTap: () => _showHomeworkDetail(homework),
-          );
-        },
-      ),
+      children: childrenList,
+    );
+  }
+
+  // 根据作业信息生成组件
+  List<HomeworkItem> _generateItem(List<Homework> homeworkList, bool finished) {
+    return List<HomeworkItem>.generate(
+      homeworkList.length,
+          (index) {
+        Homework homework = homeworkList[index];
+        return HomeworkItem(
+          homework.course.name,
+          homework.title,
+          homework.dateTime,
+          onTap: () => _showHomeworkDetail(homework),
+          finished: finished,
+        );
+      },
     );
   }
 
@@ -221,16 +228,16 @@ class _HomeworkPageState extends State<HomeworkPage> {
 
       // 获取课程信息
       _setLoadingText('获取课程信息');
-      var courses = await getReminderList();
-//      var courses = await getAllCourses();
+//      var courses = await getReminderList();
+      var courses = await getAllCourses();
       if (courses == null) {
         _homeworkList = null;
         throw Exception('课程获取失败');
       }
 
       // 获取作业信息
-      _setLoadingText('获取作业信息');
       for (int i = 0; i < courses.length; i++) {
+        _setLoadingText('获取${courses[i].name}的作业');
         var list = await getHomeworkList(courses[i].id);
         list.forEach((homework) => homework.course = courses[i]);
         _homeworkList.addAll(list);

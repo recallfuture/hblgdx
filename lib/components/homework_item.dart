@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 class HomeworkItem extends StatelessWidget {
+  final bool finished;
   final String _courseName;
   final String _homeworkTitle;
   final String _endDate;
   final onTap;
 
   HomeworkItem(this._courseName, this._homeworkTitle, this._endDate,
-      {@required this.onTap});
+      {@required this.onTap, this.finished = true});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 20),
       child: GestureDetector(
         onTap: onTap,
         child: Card(
@@ -52,7 +52,13 @@ class HomeworkItem extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Icon(
+                    finished
+                        ? Icon(
+                      Icons.check_circle,
+                      color: Colors.green,
+                      size: 22,
+                    )
+                        : Icon(
                       Icons.error,
                       color: Colors.red,
                       size: 22,
