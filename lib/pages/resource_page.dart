@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
 import 'package:hblgdx/api/jxxt/login.dart';
 import 'package:hblgdx/api/jxxt/resource.dart';
 import 'package:hblgdx/model/course.dart';
@@ -23,7 +24,8 @@ class ResourcePage extends StatefulWidget {
   _ResourcePageState createState() => _ResourcePageState();
 }
 
-class _ResourcePageState extends State<ResourcePage> {
+class _ResourcePageState extends State<ResourcePage>
+    with TickerProviderStateMixin {
   Future _future;
   List<Resource> _resources;
   List<Course> _allCourses;
@@ -31,12 +33,32 @@ class _ResourcePageState extends State<ResourcePage> {
   String _loadingText = '';
   String _errorText = '';
 
-  String title = '确定下载此文件么';
+  var _sequenceAnimation;
+  AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
     _onRefresh();
+    _initAnimation();
+  }
+
+  _initAnimation() {
+    _animationController = AnimationController(vsync: this);
+    _sequenceAnimation = new SequenceAnimationBuilder()
+        .addAnimatable(
+        animatable: Tween<double>(begin: 24, end: 32),
+        from: Duration(seconds: 0),
+        to: Duration(milliseconds: 300),
+        tag: "size",
+        curve: Curves.fastOutSlowIn)
+        .addAnimatable(
+        animatable: Tween<double>(begin: 32, end: 24),
+        from: Duration(milliseconds: 300),
+        to: Duration(milliseconds: 600),
+        tag: "size",
+        curve: Curves.fastOutSlowIn)
+        .animate(_animationController);
   }
 
   @override
@@ -59,9 +81,15 @@ class _ResourcePageState extends State<ResourcePage> {
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 53, 83, 108),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.file_download),
-            onPressed: _showDownloadManagerPage,
+          AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) {
+              return IconButton(
+                iconSize: _sequenceAnimation['size'].value,
+                icon: Icon(Icons.file_download),
+                onPressed: _showDownloadManagerPage,
+              );
+            },
           ),
           IconButton(
             icon: Icon(Icons.refresh),
@@ -247,8 +275,8 @@ class _ResourcePageState extends State<ResourcePage> {
 
   _checkAndRequestPermission() async {
     var permissionHandler = PermissionHandler();
-    var permission = await permissionHandler
-        .checkPermissionStatus(PermissionGroup.storage);
+    var permission =
+    await permissionHandler.checkPermissionStatus(PermissionGroup.storage);
 
     // 获取文件访问权限
     if (permission != PermissionStatus.granted) {
@@ -324,11 +352,13 @@ class _ResourcePageState extends State<ResourcePage> {
       request.download(
         resource.downloadUrl,
         path,
-        onReceiveProgress: (count, total) {
+        onReceiveProgress: (count, total) async {
           int progress = (count / total * 100).floor();
           _showToast('${resource.realName}：$progress%');
           if (progress == 100) {
             _showToast('${resource.realName}下载完成，请到下载管理查看');
+            await _animationController.forward();
+            _animationController.reset();
           }
         },
       );
