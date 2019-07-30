@@ -41,6 +41,12 @@ class AboutPage extends StatelessWidget {
           () =>
           launch('https://github.com/recallfuture/hblgdx/releases/latest'),
     ),
+    AboutItem(
+      '备用下载地址（码云）',
+      'https://gitee.com/recallfuture/hblgdx/releases/latest',
+          () =>
+          launch('https://gitee.com/recallfuture/hblgdx/releases/latest'),
+    ),
     AboutItem('开源协议', 'MIT'),
     AboutItem('版本号', DataStore.version),
   ];
