@@ -27,15 +27,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var rootPage;
-    if (DataStore.isFirstTime) {
-      rootPage = WelcomePage();
-    } else if (DataStore.isSignedIn) {
-      rootPage = HomePage();
-    } else {
-      rootPage = LoginPage();
-    }
-
     return OKToast(
       child: MaterialApp(
         title: '校园查',
@@ -45,7 +36,7 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => rootPage,
+          '/': (context) => getRootPage(),
           '/login': (context) => LoginPage(),
           '/faq': (context) => FAQPage(),
           '/feedback': (context) => FeedBackPage(),
@@ -54,5 +45,15 @@ class MyApp extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Widget getRootPage() {
+    if (DataStore.isFirstTime) {
+      return WelcomePage();
+    } else if (DataStore.isSignedIn) {
+      return HomePage();
+    } else {
+      return LoginPage();
+    }
   }
 }
