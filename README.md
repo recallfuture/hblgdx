@@ -62,6 +62,7 @@
 - downloads_path_provider: 获取外置存储上的下载目录
 - url_launcher: 用外部应用打开链接
 - get_version: 获取当前版本信息
+- flutter_sequence_animation: 以更直观的方式创建动画
 
 感谢以上项目的开源，没有他们就没有这个项目
 
