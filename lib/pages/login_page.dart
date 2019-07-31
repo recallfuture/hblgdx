@@ -57,10 +57,13 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 200.0),
                   buildTitle(),
                   SizedBox(height: 40.0),
+                  buildTip('按下回车前往下一项'),
                   buildUsernameTextField(context),
                   SizedBox(height: 30.0),
+                  buildTip('默认是hblgdx123'),
                   buildJxxtPasswordTextField(context),
                   SizedBox(height: 30.0),
+                  buildTip('默认和学号相同'),
                   buildJwxtPasswordTextField(context),
                   SizedBox(height: 50.0),
                   buildLoginButton(context),
@@ -85,6 +88,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget buildTip(String text) {
+    return Text(
+      'tip：' + text,
+      textAlign: TextAlign.center,
+      style: TextStyle(color: Colors.white),
+    );
+  }
+
   Widget buildUsernameTextField(BuildContext context) {
     return TextFormField(
       style: TextStyle(color: Colors.white),
@@ -98,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
           borderRadius: BorderRadius.circular(30),
           borderSide: new BorderSide(color: Colors.white),
         ),
-        labelText: '请输入学号/工号',
+        labelText: '请输入学号',
         labelStyle: TextStyle(color: Colors.white),
       ),
       validator: (String value) {
@@ -106,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
           _username = value;
         });
         if (value.isEmpty) {
-          return '请输入学号/工号';
+          return '不能为空';
         }
         return null;
       },
@@ -134,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
       },
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-        labelText: '请输入教学系统密码',
+        labelText: '教学系统密码',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(30)),
         ),
@@ -175,13 +186,13 @@ class _LoginPageState extends State<LoginPage> {
           _jwPassword = value;
         });
         if (value.isEmpty) {
-          return '密码不能为空';
+          return '不能为空';
         }
         return null;
       },
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-        labelText: '请输入教务系统密码',
+        labelText: '教务系统密码',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(30)),
         ),
@@ -205,7 +216,10 @@ class _LoginPageState extends State<LoginPage> {
           },
         ),
       ),
-      onEditingComplete: _onPressed,
+      onEditingComplete: () {
+        _jwPasswordFieldNode.unfocus();
+        _onPressed();
+      },
     );
   }
 
@@ -245,13 +259,15 @@ class _LoginPageState extends State<LoginPage> {
     if (this._waiting) {
       return;
     }
-    _startWait();
 
     // 检验表单数据
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
+
+    // 放在后面防止无限转圈
+    _startWait();
 
     int code;
 
@@ -270,7 +286,6 @@ class _LoginPageState extends State<LoginPage> {
       _showToast('教学系统登录失败(${_errorCode[code]}，错误码$code)');
       return;
     }
-
 
     // 存储下来
     await DataStore.setIsSignedIn(true);
