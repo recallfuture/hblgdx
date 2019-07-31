@@ -57,16 +57,15 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 200.0),
                   buildTitle(),
                   SizedBox(height: 40.0),
-                  buildTip('按下回车前往下一项'),
                   buildUsernameTextField(context),
                   SizedBox(height: 30.0),
-                  buildTip('默认是hblgdx123'),
                   buildJxxtPasswordTextField(context),
                   SizedBox(height: 30.0),
-                  buildTip('默认和学号相同'),
                   buildJwxtPasswordTextField(context),
-                  SizedBox(height: 50.0),
+                  SizedBox(height: 30.0),
                   buildLoginButton(context),
+                  SizedBox(height: 10.0),
+                  buildHelpLink(context),
                 ],
               ),
             ),
@@ -85,14 +84,6 @@ class _LoginPageState extends State<LoginPage> {
         fontSize: 30,
         fontWeight: FontWeight.bold,
       ),
-    );
-  }
-
-  Widget buildTip(String text) {
-    return Text(
-      'tip：' + text,
-      textAlign: TextAlign.center,
-      style: TextStyle(color: Colors.white),
     );
   }
 
@@ -223,6 +214,23 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget buildHelpLink(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        FlatButton(
+          child: Text(
+            '遇到问题？',
+            style: TextStyle(color: Colors.white60),
+          ),
+          onPressed: () {
+            Navigator.of(context).pushNamed('/faq');
+          },
+        ),
+      ],
+    );
+  }
+
   Widget buildLoginButton(BuildContext context) {
     return MaterialButton(
       child: _waiting
@@ -283,7 +291,7 @@ class _LoginPageState extends State<LoginPage> {
     code = await myncmc.login(_username, _jwPassword);
     if (code != 200) {
       _stopWait();
-      _showToast('教学系统登录失败(${_errorCode[code]}，错误码$code)');
+      _showToast('教务系统登录失败(${_errorCode[code]}，错误码$code)');
       return;
     }
 
