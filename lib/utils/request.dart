@@ -39,7 +39,7 @@ class Request {
     // 任意HTTP响应码均不报错
     _dio.options.validateStatus = (code) => true;
     _dio.options.connectTimeout = 5000;
-    _dio.options.receiveTimeout = 5000;
+    _dio.options.receiveTimeout = 10000;
   }
 
   /// get方式获取响应
