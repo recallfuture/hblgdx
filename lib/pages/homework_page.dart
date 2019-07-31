@@ -422,7 +422,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
                 homework.title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 30.0,
+                  fontSize: 24.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
