@@ -1,5 +1,5 @@
 {
   "versionCode": 1,
-  "versionName": "1.0-beta",
-  "changelog": "第一版公测开始！"
+  "versionName": "1.0-beta.1",
+  "changelog": "- 修复了部分旧机型无法安装的问题\n- 修复了登录提交为空导致的无限转圈的问题\n- 适配低分辨率机型\n- 登录界面增加帮助\n- 细节调整"
 }
