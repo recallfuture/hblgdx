@@ -33,6 +33,10 @@ class _ResourcePageState extends State<ResourcePage>
   String _loadingText = '';
   String _errorText = '';
 
+  // 是否有下载好还没查看的资源
+  // 设为static，全局共享
+  static bool _hasDownloaded = false;
+
   var _sequenceAnimation;
   AnimationController _animationController;
 
@@ -84,10 +88,29 @@ class _ResourcePageState extends State<ResourcePage>
           AnimatedBuilder(
             animation: _animationController,
             builder: (context, child) {
-              return IconButton(
-                iconSize: _sequenceAnimation['size'].value,
-                icon: Icon(Icons.file_download),
-                onPressed: _showDownloadManagerPage,
+              return Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+                  IconButton(
+                    iconSize: _sequenceAnimation['size'].value,
+                    icon: Icon(Icons.file_download),
+                    onPressed: _showDownloadManagerPage,
+                  ),
+                  _hasDownloaded
+                      ? Positioned(
+                    top: 10,
+                    right: 10,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.red,
+                      ),
+                      width: 10,
+                      height: 10,
+                    ),
+                  )
+                      : Container(),
+                ],
               );
             },
           ),
@@ -105,6 +128,7 @@ class _ResourcePageState extends State<ResourcePage>
     try {
       await _checkAndRequestPermission();
       Directory dir = await _getDownloadDir();
+      _setHasDownloaded(false);
       Navigator.of(context).push(
         new MaterialPageRoute(
           builder: (context) => DownloadManagerPage(context, dir),
@@ -357,6 +381,7 @@ class _ResourcePageState extends State<ResourcePage>
           _showToast('${resource.realName}：$progress%');
           if (progress == 100) {
             _showToast('${resource.realName}下载完成，请到下载管理查看');
+            _setHasDownloaded(true);
             await _animationController.forward();
             _animationController.reset();
           }
@@ -429,6 +454,12 @@ class _ResourcePageState extends State<ResourcePage>
   _setErrorText(String text) {
     setState(() {
       _errorText = text;
+    });
+  }
+
+  _setHasDownloaded(bool value) {
+    setState(() {
+      _hasDownloaded = value;
     });
   }
 
