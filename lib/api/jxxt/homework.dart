@@ -71,9 +71,11 @@ Future<String> getHomeworkDetail(String homeworkId) async {
     return null;
   }
 
-  Match match = matchOne(regex, content);
-  if (match != null) {
-    String html = match.group(1);
+  var document = parse(content);
+  var input = document.querySelector('input[type=hidden]');
+
+  if (input != null) {
+    String html = input.attributes['value'];
     html = html.replaceAll(RegExp(r'&lt;'), '<');
     html = html.replaceAll(RegExp(r'&gt;'), '>');
     html = html.replaceAll(RegExp(r'&quot;'), '"');
