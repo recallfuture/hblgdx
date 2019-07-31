@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hblgdx/api/myncmc/login.dart';
 import 'package:hblgdx/api/myncmc/score.dart';
-import 'package:hblgdx/model/score.dart';
-import 'package:hblgdx/model/score_report.dart';
+import 'package:hblgdx/model/myncmc/score.dart';
+import 'package:hblgdx/model/myncmc/score_report.dart';
 import 'package:hblgdx/utils/data_store.dart';
 
 class ScorePage extends StatefulWidget {

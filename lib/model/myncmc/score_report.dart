@@ -1,8 +1,7 @@
+import 'package:hblgdx/model/myncmc/score.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'score.dart';
-
-part 'score_report.g.dart';
+part 'package:hblgdx/model/myncmc/score_report.g.dart';
 
 @JsonSerializable()
 class ScoreReport {

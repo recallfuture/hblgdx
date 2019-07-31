@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:hblgdx/model/score_report.dart';
+import 'package:hblgdx/model/myncmc/score_report.dart';
 import 'package:hblgdx/utils/request.dart';
 
 import 'base.dart';
