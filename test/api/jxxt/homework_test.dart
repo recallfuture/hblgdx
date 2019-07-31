@@ -1,7 +1,7 @@
 import 'package:hblgdx/api/jxxt/homework.dart';
 import 'package:hblgdx/api/jxxt/login.dart';
-import 'package:hblgdx/model/course.dart';
-import 'package:hblgdx/model/homework.dart';
+import 'package:hblgdx/model/jxxt/course.dart';
+import 'package:hblgdx/model/jxxt/homework.dart';
 import 'package:test_api/test_api.dart';
 
 void main() {

@@ -1,5 +1,5 @@
-import 'package:hblgdx/model/course.dart';
-import 'package:hblgdx/model/homework.dart';
+import 'package:hblgdx/model/jxxt/course.dart';
+import 'package:hblgdx/model/jxxt/homework.dart';
 import 'package:hblgdx/utils/regex.dart';
 import 'package:hblgdx/utils/request.dart';
 import 'package:html/dom.dart';

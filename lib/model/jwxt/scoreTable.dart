@@ -1,4 +1,4 @@
-import 'score.dart';
+import 'package:hblgdx/model/jwxt/score.dart';
 
 class ScoreTable {
   List<Score> scores;

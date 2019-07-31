@@ -1,7 +1,7 @@
-import 'package:hblgdx/model/course.dart';
-import 'package:hblgdx/model/grade.dart';
-import 'package:hblgdx/model/score.dart';
-import 'package:hblgdx/model/scoreTable.dart';
+import 'package:hblgdx/model/jwxt/grade.dart';
+import 'package:hblgdx/model/jwxt/score.dart';
+import 'package:hblgdx/model/jwxt/scoreTable.dart';
+import 'package:hblgdx/model/jxxt/course.dart';
 import 'package:hblgdx/utils/request.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';

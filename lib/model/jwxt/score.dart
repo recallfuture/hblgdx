@@ -1,4 +1,4 @@
-import 'course.dart';
+import 'package:hblgdx/model/jxxt/course.dart';
 
 class Score {
   Course course;

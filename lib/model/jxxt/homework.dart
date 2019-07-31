@@ -1,4 +1,4 @@
-import 'course.dart';
+import 'package:hblgdx/model/jxxt/course.dart';
 
 class Homework {
   /// 作业id

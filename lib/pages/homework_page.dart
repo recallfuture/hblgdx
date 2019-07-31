@@ -4,7 +4,7 @@ import 'package:hblgdx/api/jxxt/homework.dart';
 import 'package:hblgdx/api/jxxt/login.dart';
 import 'package:hblgdx/api/jxxt/resource.dart';
 import 'package:hblgdx/components/homework_item.dart';
-import 'package:hblgdx/model/homework.dart';
+import 'package:hblgdx/model/jxxt/homework.dart';
 import 'package:hblgdx/utils/data_store.dart';
 
 class HomeworkPage extends StatefulWidget {
