@@ -1,6 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:hblgdx/api/jwxt/login.dart' deferred as jwxt;
 import 'package:hblgdx/api/jxxt/login.dart' deferred as jxxt;
-import 'package:hblgdx/api/myncmc/login.dart' deferred as myncmc;
 import 'package:hblgdx/utils/data_store.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -13,19 +15,29 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   FocusNode _jwPasswordFieldNode = FocusNode();
   FocusNode _jxPasswordFieldNode = FocusNode();
+  FocusNode _codeFieldNode = FocusNode();
   String _username = DataStore.username;
   String _jwPassword = DataStore.jwxtPassword;
   String _jxPassword = DataStore.jxxtPassword;
+  String _code; // 验证码
+  Future _codeFuture;
+  Uint8List _codeImage;
   bool _isObscure = true;
   Color _eyeColor = Colors.white54;
   bool _waiting = false;
 
   final _errorCode = {
     400: '请检查帐号密码',
-    401: 'token错误',
+    401: '验证码错误',
     403: '帐号已经被锁，请明天再试',
     500: '请检查网络',
   };
+
+  @override
+  void initState() {
+    super.initState();
+    _codeFuture = _getValidateCode();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +46,8 @@ class _LoginPageState extends State<LoginPage> {
       child: Stack(
         children: <Widget>[
           Positioned(
-            top: -50,
-            right: -50,
+            top: -70,
+            right: -70,
             child: Image.asset(
               'assets/colors.png',
               scale: 3,
@@ -54,15 +66,17 @@ class _LoginPageState extends State<LoginPage> {
               child: ListView(
                 padding: EdgeInsets.symmetric(horizontal: 70.0),
                 children: <Widget>[
-                  SizedBox(height: 200.0),
+                  SizedBox(height: 170.0),
                   buildTitle(),
-                  SizedBox(height: 40.0),
+                  SizedBox(height: 30.0),
                   buildUsernameTextField(context),
-                  SizedBox(height: 30.0),
+                  SizedBox(height: 20.0),
                   buildJxxtPasswordTextField(context),
-                  SizedBox(height: 30.0),
+                  SizedBox(height: 20.0),
                   buildJwxtPasswordTextField(context),
-                  SizedBox(height: 30.0),
+                  SizedBox(height: 20.0),
+                  buildCodeRow(),
+                  SizedBox(height: 20.0),
                   buildLoginButton(context),
                   SizedBox(height: 10.0),
                   buildHelpLink(context),
@@ -199,7 +213,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           onPressed: () {
             setState(
-              () {
+                  () {
                 _isObscure = !_isObscure;
                 _eyeColor = _isObscure ? Colors.white54 : Colors.white;
               },
@@ -207,10 +221,113 @@ class _LoginPageState extends State<LoginPage> {
           },
         ),
       ),
+      onEditingComplete: () =>
+          FocusScope.of(context).requestFocus(_codeFieldNode),
+    );
+  }
+
+  Widget buildCodeRow() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Expanded(
+          child: buildCodeTextField(),
+        ),
+        Expanded(
+          child: buildCodeImage(),
+        ),
+      ],
+    );
+  }
+
+  Widget buildCodeTextField() {
+    return TextFormField(
+      style: TextStyle(color: Colors.white),
+      focusNode: _codeFieldNode,
+      initialValue: this._code,
+      onSaved: (String value) => _code = value.trim(),
+      validator: (String value) {
+        setState(() {
+          _code = value;
+        });
+        if (value.isEmpty) {
+          return '不能为空';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+        labelText: '验证码',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        labelStyle: TextStyle(color: Colors.white),
+      ),
       onEditingComplete: () {
-        _jwPasswordFieldNode.unfocus();
         _onPressed();
       },
+    );
+  }
+
+  Widget buildCodeImage() {
+    return FutureBuilder(
+      future: _codeFuture,
+      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return Container();
+          case ConnectionState.active:
+            return Container();
+          case ConnectionState.waiting:
+            return buildStateWaiting();
+          case ConnectionState.done:
+            return buildStateDone();
+        }
+        return Container();
+      },
+    );
+  }
+
+  Widget buildStateWaiting() {
+    return Center(
+      child: CircularProgressIndicator(
+        valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+      ),
+    );
+  }
+
+  Widget buildStateDone() {
+    return GestureDetector(
+      onTap: () => _codeFuture = _getValidateCode(),
+      child: Image.memory(
+        _codeImage,
+        scale: 0.5,
+      ),
+    );
+  }
+
+  Widget buildLoginButton(BuildContext context) {
+    return MaterialButton(
+      child: _waiting
+          ? CircularProgressIndicator(
+        valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+      )
+          : Text(
+        '登录',
+        style: TextStyle(
+          fontSize: 20,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      color: Colors.deepPurpleAccent,
+      padding: EdgeInsets.symmetric(vertical: 10),
+      shape: StadiumBorder(),
+      onPressed: _onPressed,
     );
   }
 
@@ -231,29 +348,16 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget buildLoginButton(BuildContext context) {
-    return MaterialButton(
-      child: _waiting
-          ? CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
-            )
-          : Text(
-              '登录',
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-      color: Colors.deepPurpleAccent,
-      padding: EdgeInsets.symmetric(vertical: 10),
-      shape: StadiumBorder(),
-      onPressed: _onPressed,
-    );
+  _getValidateCode() async {
+    _codeImage = await jwxt.getValidateCode();
+    setState(() {
+      _codeImage = _codeImage;
+    });
   }
 
   _onPressed() async {
     try {
+      FocusScope.of(context).unfocus();
       await _submit();
     } catch (e) {
       _stopWait();
@@ -288,7 +392,7 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     _showToast('正在登录教务系统');
-    code = await myncmc.login(_username, _jwPassword);
+    code = await jwxt.login(_username, _jwPassword, _code);
     if (code != 200) {
       _stopWait();
       _showToast('教务系统登录失败(${_errorCode[code]}，错误码$code)');
@@ -301,7 +405,7 @@ class _LoginPageState extends State<LoginPage> {
     await DataStore.setJxxtPassword(_jxPassword);
     await DataStore.setJwxtPassword(_jwPassword);
     DataStore.isSignedInJxxt = true;
-    DataStore.isSignedInMyncmc = true;
+    DataStore.isSignedInJwxt = true;
 
     _stopWait();
     _showToast('登录成功');
