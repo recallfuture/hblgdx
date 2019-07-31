@@ -84,36 +84,14 @@ class _ResourcePageState extends State<ResourcePage>
         centerTitle: true,
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 53, 83, 108),
+        leading: this.widget.course == null
+            ? IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () => Scaffold.of(context).openDrawer(),
+        )
+            : null,
         actions: <Widget>[
-          AnimatedBuilder(
-            animation: _animationController,
-            builder: (context, child) {
-              return Stack(
-                alignment: Alignment.center,
-                children: <Widget>[
-                  IconButton(
-                    iconSize: _sequenceAnimation['size'].value,
-                    icon: Icon(Icons.file_download),
-                    onPressed: _showDownloadManagerPage,
-                  ),
-                  _hasDownloaded
-                      ? Positioned(
-                    top: 10,
-                    right: 10,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.red,
-                      ),
-                      width: 10,
-                      height: 10,
-                    ),
-                  )
-                      : Container(),
-                ],
-              );
-            },
-          ),
+          _buildAnimatedBuilder(),
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: _onRefresh,
@@ -121,6 +99,39 @@ class _ResourcePageState extends State<ResourcePage>
         ],
       ),
       body: _buildFuture(),
+    );
+  }
+
+  Widget _buildAnimatedBuilder() {
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (context, child) {
+        return Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            IconButton(
+              iconSize: _sequenceAnimation['size'].value,
+              icon: Icon(Icons.file_download),
+              onPressed: _showDownloadManagerPage,
+            ),
+            // 小红点
+            _hasDownloaded
+                ? Positioned(
+              top: 10,
+              right: 10,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.red,
+                ),
+                width: 10,
+                height: 10,
+              ),
+            )
+                : Container(),
+          ],
+        );
+      },
     );
   }
 

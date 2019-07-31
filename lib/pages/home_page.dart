@@ -65,8 +65,7 @@ class _HomePageState extends State<HomePage> {
         if (version.versionName != DataStore.version) {
           _showUpdateDialog(version);
         }
-      }
-      catch (e) {
+      } catch (e) {
         // 更新错误也没关系，不需要提醒
         print(e.toString());
       }
@@ -123,33 +122,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: _buildDrawer(),
-      body: Stack(
-        children: <Widget>[
-          IndexedStack(
-            index: _currentIndex,
-            children: _pages,
-          ),
-          _buildDrawerOpener(),
-        ],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
       ),
       bottomNavigationBar: _buildBottomNavigationBar(),
-    );
-  }
-
-  Widget _buildDrawerOpener() {
-    return Builder(
-      builder: (context) =>
-          Align(
-            alignment: Alignment.centerLeft,
-            // IconButton有最小宽度限制，在这里不合适，换成GestureDetector
-            child: GestureDetector(
-              onTap: () => Scaffold.of(context).openDrawer(),
-              child: Image.asset(
-                'assets/opener.png',
-                scale: 1.5,
-              ),
-            ),
-          ),
     );
   }
 

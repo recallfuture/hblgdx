@@ -58,6 +58,10 @@ class _ScorePageState extends State<ScorePage> {
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () => Scaffold.of(context).openDrawer(),
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),

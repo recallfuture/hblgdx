@@ -22,6 +22,10 @@ class _CourseTablePageState extends State<CourseTablePage> {
       centerTitle: true,
       title: Text('敬请期待'),
       backgroundColor: Color.fromARGB(255, 61, 61, 111),
+      leading: IconButton(
+        icon: Icon(Icons.menu),
+        onPressed: () => Scaffold.of(context).openDrawer(),
+      ),
     );
   }
 
