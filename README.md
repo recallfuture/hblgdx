@@ -4,7 +4,7 @@
 
 - http://elearning.ncst.edu.cn/
 - http://xjw1.ncst.edu.cn/
-- http://www.myncmc.com/zt_jda.aspx
+- http://www.myncmc.com/zt_jd.asp
 
 ## 功能
 
