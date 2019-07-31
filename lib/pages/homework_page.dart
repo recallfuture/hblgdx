@@ -4,16 +4,23 @@ import 'package:hblgdx/api/jxxt/homework.dart';
 import 'package:hblgdx/api/jxxt/login.dart';
 import 'package:hblgdx/api/jxxt/resource.dart';
 import 'package:hblgdx/components/homework_item.dart';
+import 'package:hblgdx/model/jxxt/course.dart';
 import 'package:hblgdx/model/jxxt/homework.dart';
 import 'package:hblgdx/utils/data_store.dart';
 
 class HomeworkPage extends StatefulWidget {
+  final Course course;
+
+  HomeworkPage({this.course});
+
   @override
   _HomeworkPageState createState() => _HomeworkPageState();
 }
 
 class _HomeworkPageState extends State<HomeworkPage> {
   Future _future;
+  List<Course> _reminderCourseList;
+  List<Course> _allCourseList;
   List<Homework> _homeworkList;
   bool _isLoading = false;
   String _loadingText = '';
@@ -22,8 +29,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
   @override
   void initState() {
     super.initState();
-
-    _future = _getHomeworkList();
+    _onRefresh();
   }
 
   @override
@@ -55,10 +61,12 @@ class _HomeworkPageState extends State<HomeworkPage> {
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
-        leading: IconButton(
+        leading: this.widget.course == null
+            ? IconButton(
           icon: Icon(Icons.menu),
           onPressed: () => Scaffold.of(context).openDrawer(),
-        ),
+        )
+            : null,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),
@@ -71,7 +79,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
   }
 
   _onRefresh() {
-    _future = _getHomeworkList();
+    _future = _getData();
   }
 
   Widget _buildFuture() {
@@ -126,11 +134,84 @@ class _HomeworkPageState extends State<HomeworkPage> {
   }
 
   Widget _buildStateDone() {
-    // 出现错误
-    if (_homeworkList == null) {
-      return _buildErrorCard();
+    if (this.widget.course == null) {
+      if (_reminderCourseList == null || _allCourseList == null) {
+        return _buildErrorCard();
+      }
+      return _buildCourseList();
+    } else {
+      // 出现错误
+      if (_homeworkList == null) {
+        return _buildErrorCard();
+      }
+      return _buildHomeworkList();
     }
+  }
 
+  Widget _buildCourseList() {
+    _allCourseList = _allCourseList.where((course) {
+      int count = _reminderCourseList
+          .where((e) => e.id == course.id)
+          .length;
+      return count == 0;
+    }).toList();
+
+    // 分别生成所有子组件
+    List<Widget> finishedCourses = _generateCourseList(_allCourseList, true);
+    List<Widget> unfinishedCourses =
+    _generateCourseList(_reminderCourseList, false);
+
+    // 构建待交作业数提示卡片
+    Widget tip = Card(
+      child: Container(
+        padding: EdgeInsets.all(15),
+        child: Text(
+          '有${unfinishedCourses.length}门课程有待交作业', textAlign: TextAlign.center,),
+      ),
+    );
+
+    // 生成组件列表
+    List<Widget> childrenList = []
+      ..add(tip)
+      ..addAll(unfinishedCourses)..addAll(finishedCourses);
+
+    // 放进列表里显示出来
+    return ListView(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      children: childrenList,
+    );
+  }
+
+  _generateCourseList(List<Course> courseList, bool finished) {
+    return List.generate(
+      courseList.length,
+          (index) {
+        return Card(
+          child: ListTile(
+            leading: finished
+                ? Icon(
+              Icons.bookmark,
+              color: Colors.orange,
+            )
+                : Icon(
+              Icons.error,
+              color: Colors.red,
+            ),
+            title: Text(courseList[index].name),
+            onTap: () =>
+                Navigator.of(context).push(
+                  new MaterialPageRoute(
+                    builder: (context) =>
+                        HomeworkPage(course: courseList[index]),
+                  ),
+                ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHomeworkList() {
     // 未完成的作业和已完成的作业
     List<Homework> finished =
     _homeworkList.where((homework) => homework.resultUrl != null).toList();
@@ -138,8 +219,8 @@ class _HomeworkPageState extends State<HomeworkPage> {
     _homeworkList.where((homework) => homework.resultUrl == null).toList();
 
     // 分别生成所有子组件
-    List<HomeworkItem> finishedItems = _generateItem(finished, true);
-    List<HomeworkItem> unfinishedItems = _generateItem(unfinished, false);
+    List<HomeworkItem> finishedItems = _generateItemList(finished, true);
+    List<HomeworkItem> unfinishedItems = _generateItemList(unfinished, false);
 
     // 构建待交作业数提示卡片
     Widget tip = Card(
@@ -162,7 +243,8 @@ class _HomeworkPageState extends State<HomeworkPage> {
   }
 
   // 根据作业信息生成组件
-  List<HomeworkItem> _generateItem(List<Homework> homeworkList, bool finished) {
+  List<HomeworkItem> _generateItemList(List<Homework> homeworkList,
+      bool finished) {
     return List<HomeworkItem>.generate(
       homeworkList.length,
           (index) {
@@ -211,41 +293,91 @@ class _HomeworkPageState extends State<HomeworkPage> {
     );
   }
 
-  /// 获取完整的homework列表
-  Future _getHomeworkList() async {
+  _getData() async {
+    if (this.widget.course == null) {
+      // 获取有待交作业的课程列表
+      _setLoadingText('获取课程信息');
+      await _getRootData();
+    } else {
+      // 获取当前课程的所有作业
+      await _getHomeworkList();
+    }
+  }
+
+  _login() async {
+    if (!DataStore.isSignedInJxxt) {
+      _setLoadingText('登录中');
+      int code = await login(DataStore.username, DataStore.jxxtPassword);
+      if (code != 200) {
+        throw Exception('登录错误，错误码$code');
+      }
+      DataStore.isSignedInJxxt = true;
+    }
+  }
+
+  _getRootData() async {
     if (_isLoading) {
       return;
     }
     _isLoading = true;
-    _homeworkList = new List();
 
     try {
       // 登录
-      if (!DataStore.isSignedInJxxt) {
-        _setLoadingText('登录中');
-        int code = await login(DataStore.username, DataStore.jxxtPassword);
-        if (code != 200) {
-          throw Exception('登录错误，错误码$code');
-        }
-        DataStore.isSignedInJxxt = true;
-      }
+      await _login();
+      await _getAllCourse();
+      await _getReminderList();
+    } catch (e) {
+      print(e.toString());
+      _setErrorText(e.toString());
+      _reminderCourseList = null;
+      _allCourseList = null;
+    } finally {
+      // 更新
+      setState(() {
+        _reminderCourseList = _reminderCourseList;
+        _allCourseList = _allCourseList;
+      });
+      _isLoading = false;
+    }
+  }
 
-      // 获取课程信息
-      _setLoadingText('获取课程信息');
-//      var courses = await getReminderList();
-      var courses = await getAllCourses();
-      if (courses == null) {
-        _homeworkList = null;
-        throw Exception('课程获取失败');
-      }
+  /// 获取所有课程的列表
+  _getAllCourse() async {
+    // 获取课程信息
+    _allCourseList = await getAllCourses();
+    if (_allCourseList == null) {
+      throw Exception('课程获取失败');
+    }
+  }
+
+  /// 获取有待交作业的课程列表
+  _getReminderList() async {
+    // 获取课程信息
+    _reminderCourseList = await getReminderList();
+    if (_reminderCourseList == null) {
+      throw Exception('课程获取失败');
+    }
+  }
+
+  /// 获取当前课程的所有作业
+  _getHomeworkList() async {
+    if (_isLoading) {
+      return;
+    }
+    _isLoading = true;
+
+    try {
+      // 登录
+      await _login();
+      _homeworkList = new List();
 
       // 获取作业信息
-      for (int i = 0; i < courses.length; i++) {
-        _setLoadingText('获取${courses[i].name}的作业');
-        var list = await getHomeworkList(courses[i].id);
-        list.forEach((homework) => homework.course = courses[i]);
-        _homeworkList.addAll(list);
-      }
+      Course course = this.widget.course;
+      _setLoadingText('获取${course.name}的作业');
+      var list = await getHomeworkList(course.id);
+      list.forEach((homework) => homework.course = course);
+
+      _homeworkList.addAll(list);
     } catch (e) {
       print(e.toString());
       _setErrorText(e.toString());
@@ -271,7 +403,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
     });
   }
 
-  void _showHomeworkDetail(Homework homework) async {
+  _showHomeworkDetail(Homework homework) async {
     // 没获取就先获取
     if (homework.detail == null) {
       homework.detail = await getHomeworkDetail(homework.id);
