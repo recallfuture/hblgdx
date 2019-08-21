@@ -71,9 +71,9 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 30.0),
                   buildUsernameTextField(context),
                   SizedBox(height: 20.0),
-                  buildJxxtPasswordTextField(context),
-                  SizedBox(height: 20.0),
                   buildJwxtPasswordTextField(context),
+                  SizedBox(height: 20.0),
+                  buildJxxtPasswordTextField(context),
                   SizedBox(height: 20.0),
                   buildCodeRow(),
                   SizedBox(height: 20.0),
@@ -128,20 +128,20 @@ class _LoginPageState extends State<LoginPage> {
       },
       onSaved: (String value) => _username = value.trim(),
       onEditingComplete: () =>
-          FocusScope.of(context).requestFocus(_jxPasswordFieldNode),
+          FocusScope.of(context).requestFocus(_jwPasswordFieldNode),
     );
   }
 
-  Widget buildJxxtPasswordTextField(BuildContext context) {
+  Widget buildJwxtPasswordTextField(BuildContext context) {
     return TextFormField(
       style: TextStyle(color: Colors.white),
-      focusNode: _jxPasswordFieldNode,
-      initialValue: this._jxPassword,
-      onSaved: (String value) => _jxPassword = value.trim(),
+      focusNode: _jwPasswordFieldNode,
+      initialValue: this._jwPassword,
+      onSaved: (String value) => _jwPassword = value.trim(),
       obscureText: _isObscure,
       validator: (String value) {
         setState(() {
-          _jxPassword = value;
+          _jwPassword = value;
         });
         if (value.isEmpty) {
           return '不能为空';
@@ -150,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
       },
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-        labelText: '教学系统密码',
+        labelText: '教务系统密码',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(30)),
         ),
@@ -175,20 +175,20 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
       onEditingComplete: () =>
-          FocusScope.of(context).requestFocus(_jwPasswordFieldNode),
+          FocusScope.of(context).requestFocus(_jxPasswordFieldNode),
     );
   }
 
-  Widget buildJwxtPasswordTextField(BuildContext context) {
+  Widget buildJxxtPasswordTextField(BuildContext context) {
     return TextFormField(
       style: TextStyle(color: Colors.white),
-      focusNode: _jwPasswordFieldNode,
-      initialValue: this._jwPassword,
-      onSaved: (String value) => _jwPassword = value.trim(),
+      focusNode: _jxPasswordFieldNode,
+      initialValue: this._jxPassword,
+      onSaved: (String value) => _jxPassword = value.trim(),
       obscureText: _isObscure,
       validator: (String value) {
         setState(() {
-          _jwPassword = value;
+          _jxPassword = value;
         });
         if (value.isEmpty) {
           return '不能为空';
@@ -197,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
       },
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-        labelText: '教务系统密码',
+        labelText: '教学系统密码',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(30)),
         ),
