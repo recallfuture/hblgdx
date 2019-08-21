@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "974368881372",
+    "firebase_url": "https://app-o9oy.firebaseio.com",
+    "project_id": "app-o9oy",
+    "storage_bucket": "app-o9oy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:974368881372:android:c231b008d1666bd0",
+        "android_client_info": {
+          "package_name": "space.recallsufuture.hblgdx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "974368881372-ttfl0de3gekeo2b5inppm281gkihn6g0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmRnrWg3gFHdt32ISp83JCO_cB0T7ZeJk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "974368881372-ttfl0de3gekeo2b5inppm281gkihn6g0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
