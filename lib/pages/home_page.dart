@@ -12,6 +12,7 @@ import 'package:hblgdx/pages/score_page.dart';
 import 'package:hblgdx/utils/data_store.dart';
 import 'package:hblgdx/utils/request.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:open_file/open_file.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
@@ -124,9 +125,11 @@ class _HomePageState extends State<HomePage> {
         path,
         onReceiveProgress: (count, total) async {
           int progress = (count / total * 100).floor();
-          _showToast('版本更新进度：$progress%');
+          _showToast('新版本下载进度：$progress%');
         },
       );
+
+      OpenFile.open(path);
     } catch (e) {
       print(e.toString());
       _showToast('下载失败，请手动下载');
