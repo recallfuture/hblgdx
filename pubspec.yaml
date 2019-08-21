@@ -33,6 +33,8 @@ dependencies:
   url_launcher: ^5.1.1
   get_version: ^0.1.0
   flutter_sequence_animation: ^3.0.0
+  firebase_analytics: ^5.0.0
+  firebase_core: ^0.4.0+8
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

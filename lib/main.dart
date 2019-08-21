@@ -11,8 +11,10 @@ import 'pages/feedback_page.dart';
 import 'pages/home_page.dart';
 import 'pages/login_page.dart';
 import 'pages/welcome_page.dart';
+import 'utils/analytics.dart' as Analytics;
 
 void main() async {
+  Analytics.analytics.logAppOpen();
   await DataStore.init();
   runApp(MyApp());
 
@@ -34,6 +36,8 @@ class MyApp extends StatelessWidget {
           primaryColor: Colors.deepPurpleAccent,
           scaffoldBackgroundColor: Colors.black,
         ),
+        navigatorObservers: <NavigatorObserver>[Analytics.observer],
+        //加入路由统计
         initialRoute: '/',
         routes: {
           '/': (context) => getRootPage(),
