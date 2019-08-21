@@ -1,13 +1,16 @@
+import 'dart:io';
+
+import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hblgdx/api/github/update.dart';
 import 'package:hblgdx/api/jwxt/login.dart' deferred as jwxt;
 import 'package:hblgdx/api/jxxt/login.dart' deferred as jxxt;
 import 'package:hblgdx/model/version.dart';
-import 'package:hblgdx/pages/course_table_page.dart';
 import 'package:hblgdx/pages/homework_page.dart';
 import 'package:hblgdx/pages/resource_page.dart';
 import 'package:hblgdx/pages/score_page.dart';
 import 'package:hblgdx/utils/data_store.dart';
+import 'package:hblgdx/utils/request.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,21 +27,21 @@ class _HomePageState extends State<HomePage> {
   // 懒加载工厂
   List _pageFactory = [
         () => HomeworkPage(),
-        () => CourseTablePage(),
+//        () => CourseTablePage(),
         () => ResourcePage(),
         () => ScorePage(),
   ];
 
   List<Widget> _pages = [
     Scaffold(),
-    Scaffold(),
+//    Scaffold(),
     Scaffold(),
     Scaffold(),
   ];
 
   List<Color> _bottomBarColor = [
     Color.fromARGB(255, 44, 44, 61),
-    Color.fromARGB(255, 61, 61, 111),
+//    Color.fromARGB(255, 61, 61, 111),
     Color.fromARGB(255, 53, 83, 108),
     Color.fromARGB(255, 38, 124, 160),
   ];
@@ -98,15 +101,37 @@ class _HomePageState extends State<HomePage> {
             MaterialButton(
               child: Text('确定'),
               onPressed: () {
-                _showToast('正在跳转到下载地址');
                 Navigator.pop(context);
-                launch(latestReleaseUrl);
+                _download(version);
               },
             ),
           ],
         );
       },
     );
+  }
+
+  _download(Version version) async {
+    try {
+      // 获取路径
+      String fileName = 'hblgdx.apk';
+      Directory dir = await DownloadsPathProvider.downloadsDirectory;
+      String path = '${dir.path}/$fileName';
+
+      // 下载
+      await request.download(
+        version.downloadUrl,
+        path,
+        onReceiveProgress: (count, total) async {
+          int progress = (count / total * 100).floor();
+          _showToast('版本更新进度：$progress%');
+        },
+      );
+    } catch (e) {
+      print(e.toString());
+      _showToast('下载失败，请手动下载');
+      launch(latestReleaseUrl);
+    }
   }
 
   @override
@@ -247,10 +272,10 @@ class _HomePageState extends State<HomePage> {
           icon: ImageIcon(Image.asset('assets/homework.png').image),
           title: Text('作业'),
         ),
-        BottomNavigationBarItem(
-          icon: ImageIcon(Image.asset('assets/course.png').image),
-          title: Text('课表'),
-        ),
+//        BottomNavigationBarItem(
+//          icon: ImageIcon(Image.asset('assets/course.png').image),
+//          title: Text('课表'),
+//        ),
         BottomNavigationBarItem(
           icon: ImageIcon(Image.asset('assets/resource.png').image),
           title: Text('资源'),
